@@ -1,5 +1,3 @@
-using Azure;
-using Azure.AI.OpenAI;
 using OpenAI.Chat;
 
 namespace AIAgentConversation.Services;
@@ -24,10 +22,8 @@ public class OpenAIService : IOpenAIService
             apiKey = "dummy-key"; // Prevent null reference
         }
         
-        // Use OpenAI (not Azure OpenAI) endpoint
-        var client = new AzureOpenAIClient(
-            new Uri("https://api.openai.com/v1"), 
-            new AzureKeyCredential(apiKey));
+        // Use OpenAI SDK with proper OpenAI client
+        var client = new OpenAI.OpenAIClient(apiKey);
         _chatClient = client.GetChatClient(model);
     }
 

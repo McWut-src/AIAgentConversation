@@ -182,7 +182,8 @@ async function displayMarkdown() {
         conversationContainer.style.display = 'none';
         markdownContainer.style.display = 'block';
         
-        // Set text content (not innerHTML for security)
+        // Display markdown content with white-space: pre-wrap CSS
+        // This preserves line breaks without needing innerHTML
         markdownContainer.textContent = data.markdown;
         
         // Re-enable start button for new conversation
