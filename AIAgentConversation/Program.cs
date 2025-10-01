@@ -37,6 +37,9 @@ try
     // Add services to the container.
     builder.Services.AddRazorPages();
     builder.Services.AddControllers();
+    
+    // Register OpenAI service
+    builder.Services.AddScoped<AIAgentConversation.Services.IOpenAIService, AIAgentConversation.Services.OpenAIService>();
 
     var app = builder.Build();
 
