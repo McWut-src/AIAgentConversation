@@ -1,3 +1,4 @@
+using Azure;
 using Azure.AI.OpenAI;
 using OpenAI.Chat;
 
@@ -20,10 +21,14 @@ public class OpenAIService : IOpenAIService
         if (string.IsNullOrWhiteSpace(apiKey))
         {
             _logger.LogWarning("OpenAI API key is not configured. Service will fail at runtime.");
+            apiKey = "dummy-key"; // Prevent null reference
         }
         
-        _chatClient = new AzureOpenAIClient(new Uri("https://api.openai.com/v1"), new System.ClientModel.ApiKeyCredential(apiKey ?? ""))
-            .GetChatClient(model);
+        // Use OpenAI (not Azure OpenAI) endpoint
+        var client = new AzureOpenAIClient(
+            new Uri("https://api.openai.com/v1"), 
+            new AzureKeyCredential(apiKey));
+        _chatClient = client.GetChatClient(model);
     }
 
     public async Task<string> GenerateResponseAsync(string personality, string topic, string history)
