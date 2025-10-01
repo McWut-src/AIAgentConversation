@@ -182,14 +182,9 @@ async function displayMarkdown() {
         conversationContainer.style.display = 'none';
         markdownContainer.style.display = 'block';
         
-        // Display markdown with line breaks preserved
-        // Replace \n with <br> for proper display while keeping text safe
-        const safeMarkdown = data.markdown
-            .replace(/&/g, '&amp;')
-            .replace(/</g, '&lt;')
-            .replace(/>/g, '&gt;')
-            .replace(/\n/g, '<br>');
-        markdownContainer.innerHTML = safeMarkdown;
+        // Display markdown content with white-space: pre-wrap CSS
+        // This preserves line breaks without needing innerHTML
+        markdownContainer.textContent = data.markdown;
         
         // Re-enable start button for new conversation
         const startButton = document.getElementById('start-button');
