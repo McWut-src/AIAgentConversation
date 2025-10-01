@@ -1,10 +1,33 @@
 ﻿@page
 @model IndexModel
 @{
-    ViewData["Title"] = "Home page";
+    ViewData["Title"] = "AI Agent Conversation";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="container">
+    <h1>AI Agent Conversation</h1>
+    
+    <div class="input-form">
+        <div class="form-group">
+            <label for="agent1-personality">Agent 1 Personality:</label>
+            <input type="text" id="agent1-personality" placeholder="e.g., Logical analyst who values data and evidence" />
+        </div>
+        
+        <div class="form-group">
+            <label for="agent2-personality">Agent 2 Personality:</label>
+            <input type="text" id="agent2-personality" placeholder="e.g., Creative thinker who uses metaphors and storytelling" />
+        </div>
+        
+        <div class="form-group">
+            <label for="topic">Conversation Topic:</label>
+            <input type="text" id="topic" placeholder="e.g., The future of artificial intelligence" />
+        </div>
+        
+        <button id="start-button">Start Conversation</button>
+    </div>
+    
+    <div id="conversation-container"></div>
+    <div id="markdown-container" style="display: none;"></div>
 </div>
+
+<script src="~/js/conversation.js"></script>
