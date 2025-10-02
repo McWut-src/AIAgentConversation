@@ -1,0 +1,72 @@
+# AI Conversation Configuration
+
+## Message Length Control Settings
+max_tokens: 150  # Maximum number of tokens
+
+# Target should be 2-3 sentences for conciseness.
+
+## OpenAI Parameters
+
+- temperature: 0.7  # Controls randomness of responses
+- frequency_penalty: 0.3  # Reduces repetition
+- presence_penalty: 0.6  # Encourages new topics
+
+## System Prompt Guidelines
+
+- Emphasize brevity in responses.
+- Encourage concise statements and avoid unnecessary elaboration.
+
+## Human Conversational Patterns
+
+- Use interjections: "Oh!", "Hmm..."
+- Agreement phrases: "I see what you mean."
+- Disagreement phrases: "I understand, but..."
+
+## Phase-Specific Guidance
+
+### Introduction
+- Start with a friendly tone. Use questions to engage the user.
+
+### Debate
+- Encourage differing opinions with respectful rebuttals.
+
+### Conclusion
+- Summarize key points briefly and provide a call to action.
+
+## Personality Implementation Tips
+
+### Good Examples:
+- "That’s a great point! Let’s explore that further."
+- "I completely agree with your thoughts here."
+
+### Bad Examples:
+- "In my opinion, I think that..." (too verbose)
+- "It is essential to consider..." (too formal)
+
+## Implementation Checklist for Code Changes
+- [ ] Review conversation patterns
+- [ ] Implement OpenAI parameters
+- [ ] Test message length control
+- [ ] Gather feedback from users
+
+## Testing Guidelines and Success Criteria
+- Conduct A/B testing on conversation responses.
+- Measure user satisfaction through surveys.
+
+## Before/After Examples
+
+### Before:
+"In this conversation, we can see that the responses are quite lengthy and not very engaging..."
+
+### After:
+"Let’s keep it short and engaging!"
+
+## Troubleshooting Common Issues
+- If responses are too long, adjust max_tokens or system prompts.
+- If user engagement drops, revisit personality implementation tips.
+
+## Metrics to Track
+- User engagement rate
+- Average response length
+- User satisfaction ratings
+- Frequency of interjections and conversational patterns
