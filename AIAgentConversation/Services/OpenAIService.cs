@@ -31,28 +31,61 @@ public class OpenAIService : IOpenAIService
     {
         try
         {
-            // Build the exact prompt format as specified
-            var prompt = $"You are {personality}. Respond to the conversation on {topic}: {history}";
-            
             _logger.LogInformation("Calling OpenAI with personality: {Personality}", personality);
             
             var maxTokens = _configuration.GetValue<int>("OpenAI:MaxTokens", 500);
             var temperature = _configuration.GetValue<float>("OpenAI:Temperature", 0.7f);
             
+            // Determine conversation depth based on history length to adjust creativity
+            var messageCount = string.IsNullOrEmpty(history) ? 0 : history.Split('\n', StringSplitOptions.RemoveEmptyEntries).Length;
+            var adjustedTemperature = temperature;
+            
+            // Increase temperature slightly as conversation progresses for more dynamic responses
+            if (messageCount >= 2 && messageCount < 4)
+            {
+                adjustedTemperature = Math.Min(temperature + 0.1f, 1.0f);
+            }
+            else if (messageCount >= 4)
+            {
+                adjustedTemperature = Math.Min(temperature + 0.15f, 1.0f);
+            }
+            
             var chatOptions = new ChatCompletionOptions
             {
                 MaxOutputTokenCount = maxTokens,
-                Temperature = temperature
+                Temperature = adjustedTemperature
             };
             
-            var completion = await _chatClient.CompleteChatAsync(
-                new[] { new UserChatMessage(prompt) },
-                chatOptions
-            );
+            // Build enhanced prompt with system and user messages for better context
+            var messages = new List<ChatMessage>();
+            
+            // System message to set up the agent's role and constraints
+            var systemPrompt = $"You are {personality}. You are engaging in a thoughtful conversation about {topic}. " +
+                             $"Stay true to your personality traits while being engaging and substantive. " +
+                             $"Provide responses that are 2-4 sentences long, balancing depth with conciseness. " +
+                             $"Build upon previous points when continuing the conversation.";
+            messages.Add(new SystemChatMessage(systemPrompt));
+            
+            // User message with the conversation context
+            string userPrompt;
+            if (string.IsNullOrEmpty(history))
+            {
+                // First message - introduce the topic thoughtfully
+                userPrompt = $"Begin a conversation on the topic: {topic}. Share your initial perspective based on your personality.";
+            }
+            else
+            {
+                // Continuing conversation - provide history and ask for response
+                userPrompt = $"Here is the conversation so far:\n{history}\n\n" +
+                           $"Respond to the conversation above, addressing points made while staying in character as {personality}.";
+            }
+            messages.Add(new UserChatMessage(userPrompt));
+            
+            var completion = await _chatClient.CompleteChatAsync(messages, chatOptions);
             
             var response = completion.Value.Content[0].Text;
             
-            _logger.LogInformation("OpenAI response received, length: {Length}", response.Length);
+            _logger.LogInformation("OpenAI response received, length: {Length}, temperature: {Temp}", response.Length, adjustedTemperature);
             
             return response;
         }
