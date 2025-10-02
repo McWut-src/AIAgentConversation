@@ -7,7 +7,10 @@
 <div class="container">
     <div class="header-container">
         <h1>AI Agent Conversation</h1>
-        <button id="theme-toggle" class="theme-toggle" title="Toggle dark mode">🌙</button>
+        <div class="header-buttons">
+            <button id="random-button" class="random-button" title="Randomize all inputs">🎲</button>
+            <button id="theme-toggle" class="theme-toggle" title="Toggle dark mode">🌙</button>
+        </div>
     </div>
     
     <div class="info-banner">
@@ -18,17 +21,20 @@
     <div class="input-form">
         <div class="form-group">
             <label for="agent1-personality">Agent 1 Personality: <span class="char-hint">(min 3 characters)</span></label>
-            <input type="text" id="agent1-personality" placeholder="e.g., Logical analyst who values data and evidence" maxlength="500" />
+            <input type="text" id="agent1-personality" list="agent1-suggestions" placeholder="e.g., Logical analyst who values data and evidence" maxlength="500" />
+            <datalist id="agent1-suggestions"></datalist>
         </div>
         
         <div class="form-group">
             <label for="agent2-personality">Agent 2 Personality: <span class="char-hint">(min 3 characters)</span></label>
-            <input type="text" id="agent2-personality" placeholder="e.g., Creative thinker who uses metaphors and storytelling" maxlength="500" />
+            <input type="text" id="agent2-personality" list="agent2-suggestions" placeholder="e.g., Creative thinker who uses metaphors and storytelling" maxlength="500" />
+            <datalist id="agent2-suggestions"></datalist>
         </div>
         
         <div class="form-group">
             <label for="topic">Conversation Topic: <span class="char-hint">(min 3 characters)</span></label>
-            <input type="text" id="topic" placeholder="e.g., The future of artificial intelligence" maxlength="1000" />
+            <input type="text" id="topic" list="topic-suggestions" placeholder="e.g., The future of artificial intelligence" maxlength="1000" />
+            <datalist id="topic-suggestions"></datalist>
         </div>
         
         <div class="form-group politeness-control">

@@ -41,6 +41,34 @@ body {
   flex-grow: 1;
 }
 
+/* Header Buttons Container */
+.header-buttons {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+/* Random Button */
+.random-button {
+  background: none;
+  border: 2px solid #dee2e6;
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  font-size: 24px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+}
+
+.random-button:hover {
+  transform: scale(1.1) rotate(180deg);
+  border-color: #28a745;
+}
+
 /* Theme Toggle Button */
 .theme-toggle {
   background: none;
@@ -163,6 +191,15 @@ body.dark-mode {
 .dark-mode .theme-toggle {
   border-color: #404040;
   background-color: #2d2d2d;
+}
+
+.dark-mode .random-button {
+  border-color: #404040;
+  background-color: #2d2d2d;
+}
+
+.dark-mode .random-button:hover {
+  border-color: #28a745;
 }
 
 /* Info Banner */
