@@ -6,6 +6,46 @@ let isConversationOngoing = false;
 document.addEventListener('DOMContentLoaded', function() {
     const startButton = document.getElementById('start-button');
     startButton.addEventListener('click', startConversation);
+    
+    // Setup export button dropdown handlers
+    const exportButton = document.getElementById('export-button');
+    const exportDropdown = document.getElementById('export-dropdown');
+    
+    exportButton.addEventListener('click', function(e) {
+        e.stopPropagation();
+        exportDropdown.style.display = exportDropdown.style.display === 'block' ? 'none' : 'block';
+    });
+    
+    // Close dropdown when clicking outside
+    document.addEventListener('click', function() {
+        exportDropdown.style.display = 'none';
+    });
+    
+    // Prevent dropdown from closing when clicking inside it
+    exportDropdown.addEventListener('click', function(e) {
+        e.stopPropagation();
+    });
+    
+    // Export format buttons
+    document.getElementById('export-json').addEventListener('click', () => {
+        exportConversation('json');
+        exportDropdown.style.display = 'none';
+    });
+    
+    document.getElementById('export-md').addEventListener('click', () => {
+        exportConversation('md');
+        exportDropdown.style.display = 'none';
+    });
+    
+    document.getElementById('export-txt').addEventListener('click', () => {
+        exportConversation('txt');
+        exportDropdown.style.display = 'none';
+    });
+    
+    document.getElementById('export-xml').addEventListener('click', () => {
+        exportConversation('xml');
+        exportDropdown.style.display = 'none';
+    });
 });
 
 // Helper function to create message bubble
@@ -55,6 +95,10 @@ async function startConversation() {
         const startButton = document.getElementById('start-button');
         startButton.disabled = true;
         
+        // Hide export button
+        const exportButton = document.getElementById('export-button');
+        exportButton.style.display = 'none';
+        
         const container = document.getElementById('conversation-container');
         container.innerHTML = '';
         
@@ -99,7 +143,8 @@ async function startConversation() {
             container.appendChild(nextWaitingIndicator);
             await continueConversation();
         } else {
-            await displayMarkdown();
+            // Conversation completed, enable export button
+            enableExportButton();
         }
     } catch (error) {
         displayError(error.message);
@@ -149,19 +194,28 @@ async function continueConversation() {
             // Recursively call continueConversation
             await continueConversation();
         } else {
-            // Conversation completed, display markdown
-            await displayMarkdown();
+            // Conversation completed, enable export button
+            enableExportButton();
         }
     } catch (error) {
         displayError(error.message);
     }
 }
 
-// Display markdown
-async function displayMarkdown() {
+// Enable export button when conversation is complete
+function enableExportButton() {
+    const exportButton = document.getElementById('export-button');
+    exportButton.style.display = 'inline-block';
+    
+    // Re-enable start button for new conversation
+    const startButton = document.getElementById('start-button');
+    startButton.disabled = false;
+}
+
+// Export conversation in selected format
+async function exportConversation(format) {
     try {
-        // Call get API endpoint
-        const response = await fetch(`/api/conversation/${conversationId}`, {
+        const response = await fetch(`/api/conversation/${conversationId}/export?format=${format}`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json'
@@ -170,25 +224,40 @@ async function displayMarkdown() {
         
         if (!response.ok) {
             const errorData = await response.json();
-            throw new Error(errorData.message || 'Failed to retrieve conversation');
+            throw new Error(errorData.message || 'Failed to export conversation');
         }
         
-        const data = await response.json();
+        // Get the content type to determine file extension
+        const contentType = response.headers.get('content-type');
+        let fileExtension = format.toLowerCase();
+        let content;
         
-        // Hide bubble container, show markdown container
-        const conversationContainer = document.getElementById('conversation-container');
-        const markdownContainer = document.getElementById('markdown-container');
+        if (contentType.includes('application/json')) {
+            content = await response.text();
+            fileExtension = 'json';
+        } else if (contentType.includes('application/xml') || contentType.includes('text/xml')) {
+            content = await response.text();
+            fileExtension = 'xml';
+        } else {
+            content = await response.text();
+            if (format.toLowerCase() === 'md') {
+                fileExtension = 'md';
+            } else {
+                fileExtension = 'txt';
+            }
+        }
         
-        conversationContainer.style.display = 'none';
-        markdownContainer.style.display = 'block';
+        // Create a blob and download
+        const blob = new Blob([content], { type: contentType });
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `conversation_${conversationId}.${fileExtension}`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        window.URL.revokeObjectURL(url);
         
-        // Display markdown content with white-space: pre-wrap CSS
-        // This preserves line breaks without needing innerHTML
-        markdownContainer.textContent = data.markdown;
-        
-        // Re-enable start button for new conversation
-        const startButton = document.getElementById('start-button');
-        startButton.disabled = false;
     } catch (error) {
         displayError(error.message);
     }

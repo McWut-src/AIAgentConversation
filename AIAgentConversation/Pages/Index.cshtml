@@ -24,10 +24,18 @@
         </div>
         
         <button id="start-button">Start Conversation</button>
+        <div class="export-container">
+            <button id="export-button" style="display: none;">Export Conversation</button>
+            <div id="export-dropdown" class="export-dropdown" style="display: none;">
+                <button id="export-json" class="export-option">JSON</button>
+                <button id="export-md" class="export-option">Markdown</button>
+                <button id="export-txt" class="export-option">Text</button>
+                <button id="export-xml" class="export-option">XML</button>
+            </div>
+        </div>
     </div>
     
     <div id="conversation-container"></div>
-    <div id="markdown-container" style="display: none;"></div>
 </div>
 
 <script src="~/js/conversation.js"></script>

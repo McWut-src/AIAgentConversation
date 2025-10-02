@@ -230,4 +230,151 @@ public class ConversationController : ControllerBase
             return StatusCode(500, new { error = "Internal server error", message = ex.Message });
         }
     }
+
+    [HttpGet("{id}/export")]
+    public async Task<IActionResult> Export(Guid id, [FromQuery] string format)
+    {
+        try
+        {
+            // Retrieve conversation with messages
+            var conversation = await _context.Conversations
+                .Include(c => c.Messages)
+                .FirstOrDefaultAsync(c => c.Id == id);
+
+            if (conversation == null)
+                return NotFound(new { error = "Conversation not found" });
+
+            // Only return if Status == "Completed"
+            if (conversation.Status != "Completed")
+                return NotFound(new { error = "Conversation not completed" });
+
+            var orderedMessages = conversation.Messages.OrderBy(m => m.Timestamp).ToList();
+
+            _logger.LogInformation("Exporting conversation {ConversationId} as {Format}", id, format);
+
+            switch (format?.ToLower())
+            {
+                case "json":
+                    return ExportAsJson(conversation, orderedMessages);
+                case "md":
+                case "markdown":
+                    return ExportAsMarkdown(conversation, orderedMessages);
+                case "txt":
+                case "text":
+                    return ExportAsText(conversation, orderedMessages);
+                case "xml":
+                    return ExportAsXml(conversation, orderedMessages);
+                default:
+                    return BadRequest(new { error = "Invalid format", message = "Supported formats: json, md, txt, xml" });
+            }
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error exporting conversation");
+            return StatusCode(500, new { error = "Internal server error", message = ex.Message });
+        }
+    }
+
+    private IActionResult ExportAsJson(Conversation conversation, List<Message> messages)
+    {
+        var json = System.Text.Json.JsonSerializer.Serialize(new
+        {
+            conversationId = conversation.Id,
+            agent1Personality = conversation.Agent1Personality,
+            agent2Personality = conversation.Agent2Personality,
+            topic = conversation.Topic,
+            status = conversation.Status,
+            startTime = conversation.StartTime,
+            endTime = conversation.EndTime,
+            iterationCount = conversation.IterationCount,
+            messages = messages.Select(m => new
+            {
+                id = m.Id,
+                agentType = m.AgentType,
+                iterationNumber = m.IterationNumber,
+                content = m.Content,
+                timestamp = m.Timestamp
+            })
+        }, new System.Text.Json.JsonSerializerOptions { WriteIndented = true });
+
+        return Content(json, "application/json");
+    }
+
+    private IActionResult ExportAsMarkdown(Conversation conversation, List<Message> messages)
+    {
+        var sb = new System.Text.StringBuilder();
+        sb.AppendLine($"# AI Agent Conversation");
+        sb.AppendLine();
+        sb.AppendLine($"**Topic:** {conversation.Topic}");
+        sb.AppendLine($"**Agent 1:** {conversation.Agent1Personality}");
+        sb.AppendLine($"**Agent 2:** {conversation.Agent2Personality}");
+        sb.AppendLine($"**Date:** {conversation.StartTime:yyyy-MM-dd HH:mm:ss} UTC");
+        sb.AppendLine();
+        sb.AppendLine("## Conversation");
+        sb.AppendLine();
+
+        foreach (var message in messages)
+        {
+            sb.AppendLine($"**{message.AgentType}:** {message.Content}");
+            sb.AppendLine();
+        }
+
+        return Content(sb.ToString(), "text/markdown");
+    }
+
+    private IActionResult ExportAsText(Conversation conversation, List<Message> messages)
+    {
+        var sb = new System.Text.StringBuilder();
+        sb.AppendLine("AI AGENT CONVERSATION");
+        sb.AppendLine("====================");
+        sb.AppendLine();
+        sb.AppendLine($"Topic: {conversation.Topic}");
+        sb.AppendLine($"Agent 1: {conversation.Agent1Personality}");
+        sb.AppendLine($"Agent 2: {conversation.Agent2Personality}");
+        sb.AppendLine($"Date: {conversation.StartTime:yyyy-MM-dd HH:mm:ss} UTC");
+        sb.AppendLine();
+        sb.AppendLine("CONVERSATION");
+        sb.AppendLine("------------");
+        sb.AppendLine();
+
+        foreach (var message in messages)
+        {
+            sb.AppendLine($"{message.AgentType}: {message.Content}");
+            sb.AppendLine();
+        }
+
+        return Content(sb.ToString(), "text/plain");
+    }
+
+    private IActionResult ExportAsXml(Conversation conversation, List<Message> messages)
+    {
+        var sb = new System.Text.StringBuilder();
+        sb.AppendLine("<?xml version=\"1.0\" encoding=\"utf-8\"?>");
+        sb.AppendLine("<Conversation>");
+        sb.AppendLine($"  <Id>{conversation.Id}</Id>");
+        sb.AppendLine($"  <Topic>{System.Security.SecurityElement.Escape(conversation.Topic)}</Topic>");
+        sb.AppendLine($"  <Agent1Personality>{System.Security.SecurityElement.Escape(conversation.Agent1Personality)}</Agent1Personality>");
+        sb.AppendLine($"  <Agent2Personality>{System.Security.SecurityElement.Escape(conversation.Agent2Personality)}</Agent2Personality>");
+        sb.AppendLine($"  <Status>{conversation.Status}</Status>");
+        sb.AppendLine($"  <StartTime>{conversation.StartTime:o}</StartTime>");
+        sb.AppendLine($"  <EndTime>{conversation.EndTime?.ToString("o")}</EndTime>");
+        sb.AppendLine($"  <IterationCount>{conversation.IterationCount}</IterationCount>");
+        sb.AppendLine("  <Messages>");
+
+        foreach (var message in messages)
+        {
+            sb.AppendLine("    <Message>");
+            sb.AppendLine($"      <Id>{message.Id}</Id>");
+            sb.AppendLine($"      <AgentType>{message.AgentType}</AgentType>");
+            sb.AppendLine($"      <IterationNumber>{message.IterationNumber}</IterationNumber>");
+            sb.AppendLine($"      <Content>{System.Security.SecurityElement.Escape(message.Content)}</Content>");
+            sb.AppendLine($"      <Timestamp>{message.Timestamp:o}</Timestamp>");
+            sb.AppendLine("    </Message>");
+        }
+
+        sb.AppendLine("  </Messages>");
+        sb.AppendLine("</Conversation>");
+
+        return Content(sb.ToString(), "application/xml");
+    }
 }
