@@ -1,0 +1,26 @@
+# AI Conversation Style Guide
+
+parameters:
+  message_length:
+    description: "Keep responses concise and to the point."
+    max_length: 150  # Maximum length for a single message
+
+  tone:
+    description: "Maintain a friendly, approachable, and professional tone."
+
+  conversational_elements:
+    description: "Incorporate elements that enhance natural conversation."
+    elements:
+      - "Ask open-ended questions."
+      - "Use affirmations and acknowledgments."
+      - "Practice active listening."
+
+examples:
+  good_patterns:
+    - "I understand how you feel. Can you tell me more about that?"
+    - "That sounds interesting! What do you think about this perspective?"
+  
+  bad_patterns:
+    - "I don't know."
+    - "This is not relevant.
+"
