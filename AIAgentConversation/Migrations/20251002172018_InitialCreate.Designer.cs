@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AIAgentConversation.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20251001124959_InitialCreate")]
+    [Migration("20251002172018_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -41,6 +41,11 @@ namespace AIAgentConversation.Migrations
 
                     b.Property<int>("IterationCount")
                         .HasColumnType("INTEGER");
+
+                    b.Property<string>("PolitenessLevel")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("TEXT");
 
                     b.Property<DateTime>("StartTime")
                         .HasColumnType("TEXT");

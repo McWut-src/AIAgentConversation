@@ -21,6 +21,7 @@ namespace AIAgentConversation.Migrations
                     Topic = table.Column<string>(type: "TEXT", maxLength: 1000, nullable: false),
                     IterationCount = table.Column<int>(type: "INTEGER", nullable: false),
                     Status = table.Column<string>(type: "TEXT", maxLength: 50, nullable: false),
+                    PolitenessLevel = table.Column<string>(type: "TEXT", maxLength: 20, nullable: false),
                     StartTime = table.Column<DateTime>(type: "TEXT", nullable: false),
                     EndTime = table.Column<DateTime>(type: "TEXT", nullable: true)
                 },
