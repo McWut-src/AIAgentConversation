@@ -653,7 +653,7 @@ For issues or questions:
 - Check the [README.md](README.md) for setup instructions
 - Review [UI.md](UI.md) for frontend integration
 - See [TUTORIAL.md](TUTORIAL.md) for complete walkthrough
-- Consult `project_board.yaml` for implementation details
+- Consult feature guides in [docs/](docs/) for advanced topics
 
 ---
 

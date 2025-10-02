@@ -133,33 +133,23 @@ sqlcmd -S "(localdb)\mssqllocaldb" -d AIConversations -Q "SELECT * FROM Conversa
 sqlcmd -S "(localdb)\mssqllocaldb" -d AIConversations -Q "DELETE FROM Messages; DELETE FROM Conversations"
 ```
 
-### Project Board Tracking
+### Development Best Practices
 
-This project uses `project_board.yaml` for detailed task tracking:
+When developing features:
 
-**Status Values:**
-- `todo` - Not started
-- `in_progress` - Currently working
-- `done` - Completed and verified
-- `failed` - Blocked or failed
+**Testing Checklist:**
+- ✅ All endpoints return expected responses
+- ✅ Database operations work correctly
+- ✅ Error handling logs appropriately
+- ✅ Input validation catches edge cases
+- ✅ UI displays messages correctly
+- ✅ Conversation phases work as expected
 
-**Updating Status:**
-
-When completing a task:
-```yaml
-status: done
-completion_note: "Implemented init endpoint with A1 call and DB save"
-error_log: ""
-```
-
-When encountering an error:
-```yaml
-status: in_progress
-completion_note: ""
-error_log: "OpenAI API returns 401 - invalid API key"
-```
-
-**Never mark a task as done unless code is fully implemented and tested.**
+**Before Committing:**
+- Test the feature thoroughly
+- Update documentation if needed
+- Ensure code follows existing patterns
+- Verify no breaking changes
 
 ## 🧪 Testing
 
@@ -383,18 +373,28 @@ The current implementation focuses on:
 
 ## 📝 Documentation Files
 
-### Available Documentation
+### Core Documentation
 
 1. **README.md** (this file) - Project overview and setup
 2. **API.md** - Detailed API endpoint documentation
 3. **UI.md** - UI usage and JavaScript implementation guide
-4. **project_board.yaml** - Detailed task breakdown and status tracking
+4. **TUTORIAL.md** - Complete step-by-step tutorial
+
+### Feature Guides (in `docs/` directory)
+
+- **[Conversation Phases](docs/CONVERSATION_PHASES.md)** - Understanding the three-phase conversation structure
+- **[AI Conversation Improvements](docs/AI_CONVERSATION_IMPROVEMENTS.md)** - Quality enhancements and techniques
+- **[AI Customization Guide](docs/AI_CUSTOMIZATION_GUIDE.md)** - Customizing agent behavior and responses
+- **[Debate Flow Improvements](docs/DEBATE_FLOW_IMPROVEMENTS.md)** - Enhancing debate quality and engagement
+- **[Natural Conversation Enhancements](docs/NATURAL_CONVERSATION_ENHANCEMENTS.md)** - Making conversations more natural
+- **[Politeness Control Guide](docs/POLITENESS_CONTROL_GUIDE.md)** - Adjusting conversation tone and style
 
 ### Quick Links
 
 - **[API Documentation](API.md)** - Complete endpoint reference
 - **[UI Documentation](UI.md)** - Frontend implementation guide
-- **[Project Board](project_board.yaml)** - Task tracking and planning
+- **[Tutorial](TUTORIAL.md)** - Step-by-step walkthrough
+- **[Feature Guides](docs/)** - Advanced features and customization
 
 ## 🤝 Contributing
 
@@ -402,16 +402,14 @@ The current implementation focuses on:
 
 1. **Fork the repository**
 2. **Create a feature branch**: `git checkout -b feature/amazing-feature`
-3. **Follow the workflow strictly** - Review `project_board.yaml` for requirements
-4. **Update project_board.yaml** - Mark tasks as done with completion notes
-5. **Test thoroughly** - Verify all 15 workflow checkpoints
-6. **Commit with clear messages**: `git commit -m 'feat: Add conversation export'`
-7. **Push to branch**: `git push origin feature/amazing-feature`
-8. **Open a Pull Request**
+3. **Follow the architecture guidelines** - Review documentation for requirements
+4. **Test thoroughly** - Verify all functionality works as expected
+5. **Commit with clear messages**: `git commit -m 'feat: Add conversation export'`
+6. **Push to branch**: `git push origin feature/amazing-feature`
+7. **Open a Pull Request**
 
 ### Code Review Checklist
 
-- [ ] Follows exact workflow from project_board.yaml
 - [ ] Uses correct prompt format
 - [ ] Implements proper error handling with Serilog
 - [ ] Validates all inputs
@@ -419,18 +417,17 @@ The current implementation focuses on:
 - [ ] Updates documentation
 - [ ] No breaking changes to API contracts
 - [ ] Maintains stateless design
-- [ ] Fixed iteration count (3) maintained
+- [ ] Follows conversation phase structure
 
 ### Development Workflow
 
 ```
-1. Select task from project_board.yaml (status: todo)
-2. Update status to in_progress
-3. Implement feature following guidelines
-4. Test thoroughly (manual + database verification)
-5. Update status to done with completion_note
-6. Commit with clear message
-7. Move to next task
+1. Review documentation and architecture guidelines
+2. Implement feature following best practices
+3. Test thoroughly (manual + database verification)
+4. Update relevant documentation
+5. Commit with clear message
+6. Submit pull request
 ```
 
 ## 🐛 Troubleshooting
@@ -520,27 +517,28 @@ Solution:
 
 ## 📊 Project Status
 
-### Current Version: 1.0.0
+### Current Version: 1.4.0
 
 **Implementation Status:**
 
-| Epic | Status | Notes |
-|------|--------|-------|
-| E1: Project Setup | 🔄 In Progress | Follow project_board.yaml |
-| E2: API Development | 📋 Planned | Depends on E1 completion |
-| E3: UI Development | 📋 Planned | Depends on E2 completion |
-| E4: Security | 📋 Planned | Depends on E2 completion |
-| E5: Documentation | 📋 Planned | Ongoing throughout |
+| Component | Status | Notes |
+|-----------|--------|-------|
+| Database Schema | ✅ Complete | Conversation phases implemented |
+| OpenAI Integration | ✅ Complete | GPT-3.5-turbo with enhanced prompts |
+| API Endpoints | ✅ Complete | Init, follow, and export endpoints |
+| UI Development | ✅ Complete | Phase indicators and controls |
+| Documentation | ✅ Complete | Comprehensive guides available |
 
 **Key Milestones:**
 - [x] Project plan completed
 - [x] README documentation created
-- [ ] Database schema implemented
-- [ ] OpenAI integration complete
-- [ ] API endpoints functional
-- [ ] UI displaying conversations
-- [ ] End-to-end testing passed
-- [ ] Deployment documentation ready
+- [x] Database schema implemented with phases
+- [x] OpenAI integration complete
+- [x] API endpoints functional
+- [x] UI displaying conversations with phase badges
+- [x] Configurable conversation length (1-10)
+- [x] Export functionality (JSON, Markdown, Text, XML)
+- [x] Comprehensive documentation
 
 ### Known Limitations
 
@@ -560,9 +558,9 @@ These are **intentional simplifications** for v1.0.
 ### Getting Help
 
 **For implementation questions:**
-- Review `project_board.yaml` for detailed task breakdown
 - Check API.md and UI.md for specific documentation
-- Use GitHub Copilot for code suggestions
+- Review feature guides in the `docs/` directory
+- Consult TUTORIAL.md for step-by-step guidance
 
 **For bugs or issues:**
 - Check Troubleshooting section above
@@ -1082,10 +1080,11 @@ AIAgentConversation/
 ├── appsettings.json                    # Configuration
 ├── appsettings.Development.json        # Development config
 ├── Program.cs                          # Application entry point + Serilog
-├── project_board.yaml                  # Detailed project plan
 ├── README.md                           # This file
 ├── API.md                              # API documentation
-└── UI.md                               # UI usage guide
+├── UI.md                               # UI usage guide
+├── TUTORIAL.md                         # Step-by-step tutorial
+└── docs/                               # Feature guides and documentation
 ```
 
 ## 🔌 API Documentation

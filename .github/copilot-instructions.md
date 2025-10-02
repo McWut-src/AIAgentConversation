@@ -2,13 +2,14 @@
 
 ## Project Overview
 
-This is a .NET 8 web application where two AI agents (powered by OpenAI GPT-3.5-turbo) engage in a conversation. The application follows **strict specifications** defined in `project_board.yaml` and must adhere to exact workflow requirements.
+This is a .NET 8 web application where two AI agents (powered by OpenAI GPT-3.5-turbo) engage in a conversation. The application follows strict architectural patterns and best practices.
 
 **Critical Files to Reference:**
-- `project_board.yaml` - Complete task breakdown and specifications
-- `README.md` - Setup instructions and workflow details
+- `README.md` - Setup instructions and architecture details
 - `API.md` - API endpoint specifications
 - `UI.md` - UI implementation guide
+- `TUTORIAL.md` - Complete walkthrough
+- `docs/` - Feature-specific guides
 
 ## Architecture Overview
 
@@ -464,23 +465,20 @@ Before marking any task as complete, verify:
 - [ ] Using gpt-3.5-turbo model
 - [ ] Exactly 6 messages per conversation
 
-## Task Workflow
+## Development Workflow
 
-When working on tasks from `project_board.yaml`:
+When implementing features:
 
-1. **Read the task specification** completely
-2. **Check dependencies** (depends_on field)
+1. **Review documentation** - Check README.md, API.md, and relevant guides in `docs/`
+2. **Understand requirements** - Follow architectural patterns
 3. **Generate code** following guidelines above
 4. **Verify against critical requirements**
 5. **Test the implementation**
-6. **Update task status** in project_board.yaml:
-   - status: "done"
-   - completion_note: "Brief description of what was done"
-   - error_log: "" (clear any errors)
+6. **Update documentation** if adding new features
 
-## Example Task Implementation
+## Example Implementation
 
-**Task: E2-F4-T14 - Implement POST /api/conversation/init endpoint**
+**Example: Implement POST /api/conversation/init endpoint**
 
 ```csharp
 [ApiController]
@@ -589,18 +587,19 @@ Before generating code, ask:
 
 If uncertain about any requirement:
 
-1. Check `project_board.yaml` for task details
-2. Review `README.md` for workflow documentation
-3. Look at the workflow_verification section
-4. Reference the critical_requirements list
-5. Ensure no deviations from specifications
+1. Review `README.md` for architecture and workflow documentation
+2. Check `API.md` for endpoint specifications
+3. Consult `UI.md` for frontend patterns
+4. Reference feature guides in `docs/` directory
+5. Look at the critical_requirements list above
+6. Ensure no deviations from established patterns
 
 ## Final Notes
 
-- **Simplicity over complexity** - This is v1.0 with intentional limitations
-- **Strict adherence** - Do not "improve" the design without approval
-- **No extras** - No authentication, rate limiting, or advanced features
-- **Fixed workflow** - The conversation flow is non-negotiable
-- **Test thoroughly** - Verify against all 15 critical requirements
+- **Follow established patterns** - Maintain consistency with existing code
+- **Thoughtful changes** - Consider impact on existing functionality
+- **Conversation phases** - Respect the three-phase structure (Introduction, Conversation, Conclusion)
+- **Test thoroughly** - Verify against all critical requirements
+- **Document changes** - Update relevant documentation for new features
 
-**When in doubt, follow project_board.yaml exactly as written.**
+**When in doubt, review the documentation in README.md, API.md, UI.md, and the docs/ directory.**

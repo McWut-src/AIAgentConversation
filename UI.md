@@ -1023,7 +1023,7 @@ input:focus, button:focus {
 - [README.md](README.md) - Project overview and setup
 - [API.md](API.md) - API endpoint documentation
 - [TUTORIAL.md](TUTORIAL.md) - Complete walkthrough
-- `project_board.yaml` - Implementation details
+- [docs/](docs/) - Feature guides and advanced topics
 - `.github/copilot-instructions.md` - Development guidelines
 
 **Source Files:**
