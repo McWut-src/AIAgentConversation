@@ -199,9 +199,22 @@ Three comprehensive guides included:
 | **Accessibility** | A11y | ✅ Enhanced |
 | **Dark Mode** | Full | ✅ All components |
 
+## 🔮 Recent Updates
+
+### Version 1.4 - Natural Conversation Enhancements
+Released: 2025-01-02
+- ✅ Natural, human-like conversation patterns
+- ✅ Personality-specific language and style
+- ✅ Varied response structures (no more "I appreciate" repetition)
+- ✅ Emotional expression appropriate to personalities
+- ✅ Conversational elements (contractions, natural transitions)
+- ✅ Zero breaking changes (prompt engineering only)
+
+See `NATURAL_CONVERSATION_ENHANCEMENTS.md` for complete details.
+
 ## 🔮 Future Ideas
 
-Potential enhancements for v1.2:
+Potential enhancements for v1.5:
 - Toast notifications
 - Conversation presets/templates
 - PDF export format
