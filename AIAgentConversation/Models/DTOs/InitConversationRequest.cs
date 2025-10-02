@@ -18,4 +18,9 @@ public class InitConversationRequest
     
     [MaxLength(20)]
     public string? PolitenessLevel { get; set; } = "medium";
+    
+    // Number of back-and-forth exchanges in conversation phase (default: 3)
+    // Total messages will be: 2 (intro) + (ConversationLength * 2) + 2 (conclusion)
+    [Range(1, 10)]
+    public int? ConversationLength { get; set; } = 3;
 }

@@ -56,6 +56,9 @@ document.addEventListener('DOMContentLoaded', function() {
     // Setup politeness slider
     setupPolitenessSlider();
     
+    // Setup conversation length slider
+    setupConversationLengthSlider();
+    
     // Setup pre-defined options
     setupPredefinedOptions();
     
@@ -90,6 +93,33 @@ function createMessageBubble(message, agentType) {
     div.className = agentType === 'A1' ? 'message-bubble-a1' : 'message-bubble-a2';
     div.textContent = message;
     return div;
+}
+
+// Helper function to create message bubble with phase indicator
+function createMessageBubbleWithPhase(message, agentType, phase) {
+    const container = document.createElement('div');
+    container.className = 'message-container';
+    
+    // Phase indicator badge
+    const phaseBadge = document.createElement('div');
+    phaseBadge.className = `phase-badge phase-${phase.toLowerCase()}`;
+    phaseBadge.textContent = phase;
+    
+    // Message bubble
+    const bubble = document.createElement('div');
+    bubble.className = agentType === 'A1' ? 'message-bubble-a1' : 'message-bubble-a2';
+    bubble.textContent = message;
+    
+    // Align based on agent
+    if (agentType === 'A1') {
+        container.style.textAlign = 'left';
+    } else {
+        container.style.textAlign = 'right';
+    }
+    
+    container.appendChild(phaseBadge);
+    container.appendChild(bubble);
+    return container;
 }
 
 // Helper function to create waiting indicator
@@ -154,6 +184,8 @@ async function startConversation() {
         const topic = document.getElementById('topic').value.trim();
         const politenessSlider = document.getElementById('politeness-slider');
         const politenessLevel = ['low', 'medium', 'high'][parseInt(politenessSlider.value)];
+        const conversationLengthSlider = document.getElementById('conversation-length-slider');
+        const conversationLength = parseInt(conversationLengthSlider.value);
         
         if (!agent1Personality || !agent2Personality || !topic) {
             alert('Please fill in all fields');
@@ -172,9 +204,6 @@ async function startConversation() {
         container.innerHTML = '';
         // Ensure container is always visible
         container.style.display = 'block';
-        
-        // Add progress indicator
-        addProgressIndicator(container, 1);
 
         // Show initial waiting indicator (left for A1)
         const waitingIndicator = createWaitingIndicator('left');
@@ -190,7 +219,8 @@ async function startConversation() {
                 agent1Personality: agent1Personality,
                 agent2Personality: agent2Personality,
                 topic: topic,
-                politenessLevel: politenessLevel
+                politenessLevel: politenessLevel,
+                conversationLength: conversationLength
             })
         });
         
@@ -205,11 +235,14 @@ async function startConversation() {
         conversationId = data.conversationId;
         isConversationOngoing = data.isOngoing;
         
+        // Add progress indicator with expected total
+        addProgressIndicator(container, 1, data.expectedTotalMessages);
+        
         // Remove waiting indicator
         container.removeChild(waitingIndicator);
         
-        // Append A1 message bubble (left, blue)
-        const messageBubble = createMessageBubble(data.message, data.agentType);
+        // Append A1 message bubble with phase indicator (left, blue)
+        const messageBubble = createMessageBubbleWithPhase(data.message, data.agentType, data.phase);
         container.appendChild(messageBubble);
         
         // If ongoing, show next waiting indicator and continue
@@ -255,12 +288,12 @@ async function continueConversation() {
             container.removeChild(waitingIndicator);
         }
         
-        // Append message bubble (A1 left blue or A2 right green)
-        const messageBubble = createMessageBubble(data.message, data.agentType);
+        // Append message bubble with phase indicator (A1 left blue or A2 right green)
+        const messageBubble = createMessageBubbleWithPhase(data.message, data.agentType, data.phase);
         container.appendChild(messageBubble);
         
         // Update progress indicator
-        updateProgressIndicator(container, data.totalMessages);
+        updateProgressIndicator(container, data.totalMessages, data.expectedTotalMessages);
         
         // Check ongoing flag and recurse
         if (data.isOngoing) {
@@ -350,23 +383,23 @@ function copyConversationToClipboard() {
 }
 
 // Add progress indicator
-function addProgressIndicator(container, currentMessage) {
+function addProgressIndicator(container, currentMessage, totalMessages) {
     const progressDiv = document.createElement('div');
     progressDiv.className = 'progress-indicator';
     progressDiv.id = 'progress-indicator';
-    progressDiv.innerHTML = `<span class="progress-text">Message ${currentMessage} of 6</span>
+    progressDiv.innerHTML = `<span class="progress-text">Message ${currentMessage} of ${totalMessages}</span>
         <div class="progress-bar-container">
-            <div class="progress-bar" style="width: ${(currentMessage / 6) * 100}%"></div>
+            <div class="progress-bar" style="width: ${(currentMessage / totalMessages) * 100}%"></div>
         </div>`;
     container.insertBefore(progressDiv, container.firstChild);
 }
 
 // Update progress indicator
-function updateProgressIndicator(container, currentMessage) {
+function updateProgressIndicator(container, currentMessage, totalMessages) {
     const progressIndicator = document.getElementById('progress-indicator');
     if (progressIndicator) {
-        progressIndicator.querySelector('.progress-text').textContent = `Message ${currentMessage} of 6`;
-        progressIndicator.querySelector('.progress-bar').style.width = `${(currentMessage / 6) * 100}%`;
+        progressIndicator.querySelector('.progress-text').textContent = `Message ${currentMessage} of ${totalMessages}`;
+        progressIndicator.querySelector('.progress-bar').style.width = `${(currentMessage / totalMessages) * 100}%`;
     }
 }
 
@@ -552,6 +585,27 @@ function setupPolitenessSlider() {
     updatePolitenessDisplay();
 }
 
+// Setup conversation length slider
+function setupConversationLengthSlider() {
+    const slider = document.getElementById('conversation-length-slider');
+    const valueDisplay = document.getElementById('conversation-length-value');
+    const description = document.getElementById('conversation-length-description');
+    
+    function updateConversationLengthDisplay() {
+        const length = parseInt(slider.value);
+        valueDisplay.textContent = length;
+        
+        // Calculate total messages: 2 (intro) + (length * 2) + 2 (conclusion)
+        const totalMessages = 2 + (length * 2) + 2;
+        description.textContent = `Total messages: ${totalMessages} (2 intro + ${length * 2} conversation + 2 conclusion)`;
+    }
+    
+    slider.addEventListener('input', updateConversationLengthDisplay);
+    
+    // Initialize display
+    updateConversationLengthDisplay();
+}
+
 // Populate datalists with pre-defined options
 function setupPredefinedOptions() {
     // Populate agent1 datalist
@@ -594,17 +648,20 @@ function setupRandomButton() {
         const randomAgent2 = predefinedOptions.agent2[Math.floor(Math.random() * predefinedOptions.agent2.length)];
         const randomTopic = predefinedOptions.topic[Math.floor(Math.random() * predefinedOptions.topic.length)];
         const randomPoliteness = Math.floor(Math.random() * 3); // 0, 1, or 2
+        const randomLength = Math.floor(Math.random() * 6) + 2; // 2-7 (reasonable range)
         
         // Set the values
         const agent1Input = document.getElementById('agent1-personality');
         const agent2Input = document.getElementById('agent2-personality');
         const topicInput = document.getElementById('topic');
         const politenessSlider = document.getElementById('politeness-slider');
+        const conversationLengthSlider = document.getElementById('conversation-length-slider');
         
         agent1Input.value = randomAgent1;
         agent2Input.value = randomAgent2;
         topicInput.value = randomTopic;
         politenessSlider.value = randomPoliteness;
+        conversationLengthSlider.value = randomLength;
         
         // Trigger validation and update displays
         validateInputField(agent1Input);
@@ -631,6 +688,13 @@ function setupRandomButton() {
         };
         valueDisplay.textContent = politenessLevels[randomPoliteness].label;
         description.textContent = politenessLevels[randomPoliteness].description;
+        
+        // Update conversation length display
+        const lengthValue = document.getElementById('conversation-length-value');
+        const lengthDescription = document.getElementById('conversation-length-description');
+        lengthValue.textContent = randomLength;
+        const totalMessages = 2 + (randomLength * 2) + 2;
+        lengthDescription.textContent = `Total messages: ${totalMessages} (2 intro + ${randomLength * 2} conversation + 2 conclusion)`;
         
         // Add a visual feedback - spin the dice
         randomButton.style.transform = 'rotate(360deg)';

@@ -20,6 +20,9 @@ public class Conversation
     
     public int IterationCount { get; set; } = 3;
     
+    // Number of conversation phase exchanges (not including intro/conclusion)
+    public int ConversationLength { get; set; } = 3;
+    
     [Required]
     [MaxLength(50)]
     public string Status { get; set; } = "InProgress";

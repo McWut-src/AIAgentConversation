@@ -15,7 +15,7 @@
     
     <div class="info-banner">
         <span class="info-icon">ℹ️</span>
-        <span class="info-text">Two AI agents will engage in a 3-round conversation (6 messages total) on your chosen topic.</span>
+        <span class="info-text">Two AI agents will engage in a structured conversation with three phases: <strong>Introduction</strong> (agents introduce themselves), <strong>Conversation</strong> (configurable back-and-forth), and <strong>Conclusion</strong> (agents summarize).</span>
     </div>
     
     <div class="input-form">
@@ -49,6 +49,21 @@
             </div>
             <div class="politeness-description" id="politeness-description">
                 Balanced tone - neither overly polite nor confrontational
+            </div>
+        </div>
+        
+        <div class="form-group conversation-length-control">
+            <label for="conversation-length-slider">
+                Conversation Length: <span id="conversation-length-value">3</span> exchanges
+                <span class="info-tooltip" title="Number of back-and-forth exchanges in the conversation phase (excludes introduction and conclusion). Total messages: 4 + (length × 2)">ℹ️</span>
+            </label>
+            <div class="slider-container">
+                <span class="slider-label">1</span>
+                <input type="range" id="conversation-length-slider" min="1" max="10" value="3" step="1" />
+                <span class="slider-label">10</span>
+            </div>
+            <div class="conversation-length-description" id="conversation-length-description">
+                Total messages: 10 (2 intro + 6 conversation + 2 conclusion)
             </div>
         </div>
         

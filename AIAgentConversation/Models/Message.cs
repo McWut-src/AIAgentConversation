@@ -15,6 +15,8 @@ public class Message
     
     public int IterationNumber { get; set; }
     
+    public ConversationPhase Phase { get; set; }
+    
     [Required]
     public string Content { get; set; } = string.Empty;
     
