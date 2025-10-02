@@ -10,16 +10,24 @@ A single-page web application that enables dynamic conversations between two AI 
 ## 🌟 Features
 
 - **Dual AI Agents**: Two independent AI agents with configurable personalities engage in conversation
+- **Structured Conversation Phases**: Three-phase conversation flow
+  - **Introduction**: Agents introduce themselves and share initial perspectives
+  - **Conversation**: Configurable back-and-forth exchanges (1-10, default 3)
+  - **Conclusion**: Agents summarize key points and provide closing statements
+- **Configurable Length**: Adjust conversation length from 1-10 exchanges (4-24 total messages)
+- **Phase-Specific AI Prompts**: Tailored prompts for each phase to improve conversation quality
 - **Enhanced AI Quality**: Advanced prompt engineering with context-aware responses and dynamic creativity
 - **Text-Based Personalities**: Simple text input for agent personalities (no dropdowns)
 - **Custom Topics**: Enter any topic for the conversation
-- **Fixed Iterations**: Exactly 3 exchanges (6 messages total) per conversation
-- **Real-time Display**: SMS-style bubble interface with static waiting indicators
+- **Politeness Control**: Adjustable tone from direct/assertive to courteous
+- **Real-time Display**: SMS-style bubble interface with phase indicators and progress tracking
+- **Phase Badges**: Color-coded badges showing which phase each message belongs to
 - **Complete History**: Final conversation displayed in formatted Markdown
 - **Database Persistence**: All conversations and messages stored in local SQL Server
 - **Simplified Architecture**: Stateless design with new conversation per page refresh
 - **Error Logging**: Serilog console logging for debugging
 - **Smart Temperature**: Progressive creativity adjustment as conversations deepen
+- **Export Options**: Export conversations as JSON, Markdown, Text, or XML
 
 ## 📋 Table of Contents
 
@@ -867,21 +875,31 @@ The application will start at:
    - **Agent 1 Personality**: Enter a personality description (e.g., "Professional Debater")
    - **Agent 2 Personality**: Enter a personality description (e.g., "Creative Storyteller")
    - **Topic**: Enter a conversation topic (e.g., "Artificial Intelligence Ethics")
-   - **Note**: Iterations are fixed at 3 (not configurable)
+   - **Politeness Level**: Choose from Direct, Medium (default), or Courteous
+   - **Conversation Length**: Select number of exchanges (1-10, default 3)
+   - **Total Messages**: 4 + (length × 2) messages (default: 10 messages)
 
 3. **Start Conversation**
    - Click **"Start Conversation"** button
-   - Watch as the conversation unfolds in real-time
+   - Watch as the conversation unfolds in real-time through three phases
 
-4. **Real-Time Display**
-   - **Agent 1 (A1)** messages appear on the left in blue bubbles
-   - **Agent 2 (A2)** messages appear on the right in green bubbles
+4. **Real-Time Display with Phases**
+   - **Phase 1 - Introduction** (2 messages):
+     - **Agent 1 (A1)** introduces themselves (left, blue bubble)
+     - **Agent 2 (A2)** introduces themselves (right, green bubble)
+   - **Phase 2 - Conversation** (configurable, default 6 messages):
+     - Agents engage in back-and-forth discussion
+     - Each message shows a colored phase badge
+   - **Phase 3 - Conclusion** (2 messages):
+     - **Agent 1** provides summary and closing statement
+     - **Agent 2** provides summary and closing statement
    - Static **"..."** indicator shows when an agent is responding
-   - The conversation **automatically loops** through 3 iterations (6 messages total)
+   - Progress bar shows current message count and total
 
 5. **Completion**
-   - After 6 messages, the conversation automatically completes
-   - Full conversation displays in **Markdown format**
+   - After all messages, the conversation automatically completes
+   - Conversation remains visible with all phase badges
+   - Export options available (JSON, Markdown, Text, XML)
    - Each page refresh starts a **new conversation** (stateless design)
 
 ### Conversation Flow Example
@@ -891,24 +909,34 @@ The application will start at:
 Agent 1 Personality: "Logical analyst who values data"
 Agent 2 Personality: "Creative thinker who loves metaphors"
 Topic: "The future of space exploration"
+Conversation Length: 3 exchanges
+Total Messages: 10 (2 intro + 6 conversation + 2 conclusion)
 
-[Conversation Start]
+[Phase 1: Introduction]
 
-💬 A1 (left, blue):
-"Based on current technological trajectories and funding patterns,
-space exploration will likely focus on Mars colonization..."
+[INTRODUCTION] 💬 A1 (left, blue):
+"Hello! I'm a logical analyst who bases conclusions on data and evidence.
+Regarding space exploration, I believe we should focus on Mars colonization
+based on current technological capabilities..."
 
 ...  ← Static waiting indicator
 
-    💬 A2 (right, green):
-    "Imagine space as an infinite canvas, where each mission is a
-    brushstroke painting humanity's destiny among the stars..."
+    [INTRODUCTION] 💬 A2 (right, green):
+    "Greetings! I'm a creative thinker who sees the universe as an infinite
+    canvas. Space exploration, to me, represents humanity's artistic expression
+    among the stars..."
 
-💬 A1 (left, blue):
-"While the metaphor is poetic, we must consider the practical
-challenges: radiation exposure, life support systems..."
+[Phase 2: Conversation]
+
+[CONVERSATION] 💬 A1 (left, blue):
+"While your metaphor is poetic, we must consider practical challenges:
+radiation exposure, life support systems, and cost-effectiveness..."
 
 ...  ← Waiting
+
+    [CONVERSATION] 💬 A2 (right, green):
+    "But consider how imagination has always preceded innovation. Each
+    challenge you mention is merely an opportunity for creative problem-solving..."
 
     💬 A2 (right, green):
     "But isn't overcoming the impossible what defines us? Like
