@@ -15,4 +15,7 @@ public class InitConversationRequest
     [Required]
     [MaxLength(1000)]
     public string Topic { get; set; } = string.Empty;
+    
+    [MaxLength(20)]
+    public string? PolitenessLevel { get; set; } = "medium";
 }

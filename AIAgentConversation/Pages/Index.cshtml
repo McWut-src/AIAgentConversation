@@ -31,6 +31,21 @@
             <input type="text" id="topic" placeholder="e.g., The future of artificial intelligence" maxlength="1000" />
         </div>
         
+        <div class="form-group politeness-control">
+            <label for="politeness-slider">
+                Agent Politeness Level: <span id="politeness-value">Medium</span>
+                <span class="info-tooltip" title="Controls how nice agents are to each other. Low = direct/assertive, Medium = balanced, High = very courteous">ℹ️</span>
+            </label>
+            <div class="slider-container">
+                <span class="slider-label">Direct</span>
+                <input type="range" id="politeness-slider" min="0" max="2" value="1" step="1" />
+                <span class="slider-label">Courteous</span>
+            </div>
+            <div class="politeness-description" id="politeness-description">
+                Balanced tone - neither overly polite nor confrontational
+            </div>
+        </div>
+        
         <button id="start-button">Start Conversation</button>
         <div class="export-container">
             <button id="export-button" style="display: none;">Export Conversation</button>

@@ -46,6 +46,13 @@ public class ConversationController : ControllerBase
                 return BadRequest(new { error = "Invalid input", message = "All fields are required" });
             }
 
+            // Validate and set politeness level
+            var politenessLevel = request.PolitenessLevel?.Trim()?.ToLower() ?? "medium";
+            if (!new[] { "low", "medium", "high" }.Contains(politenessLevel))
+            {
+                politenessLevel = "medium";
+            }
+
             // Create conversation
             var conversation = new Conversation
             {
@@ -55,6 +62,7 @@ public class ConversationController : ControllerBase
                 Topic = request.Topic,
                 IterationCount = 3,
                 Status = "InProgress",
+                PolitenessLevel = politenessLevel,
                 StartTime = DateTime.UtcNow
             };
 
@@ -64,7 +72,8 @@ public class ConversationController : ControllerBase
             var messageContent = await _openAIService.GenerateResponseAsync(
                 request.Agent1Personality,
                 request.Topic,
-                "");
+                "",
+                politenessLevel);
 
             // Save first message
             var message = new Message
@@ -136,11 +145,12 @@ public class ConversationController : ControllerBase
                 ? conversation.Agent1Personality
                 : conversation.Agent2Personality;
 
-            // Call OpenAI for next agent
+            // Call OpenAI for next agent with politeness level
             var messageContent = await _openAIService.GenerateResponseAsync(
                 personality,
                 conversation.Topic,
-                history);
+                history,
+                conversation.PolitenessLevel);
 
             // Save new message
             var message = new Message
