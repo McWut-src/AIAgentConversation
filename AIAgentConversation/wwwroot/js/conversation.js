@@ -56,6 +56,12 @@ document.addEventListener('DOMContentLoaded', function() {
     // Setup politeness slider
     setupPolitenessSlider();
     
+    // Setup pre-defined options
+    setupPredefinedOptions();
+    
+    // Setup random button
+    setupRandomButton();
+    
     // Export format buttons
     document.getElementById('export-json').addEventListener('click', () => {
         exportConversation('json');
@@ -364,30 +370,57 @@ function updateProgressIndicator(container, currentMessage) {
     }
 }
 
+// Pre-defined personalities and topics for datalist and random selection
+const predefinedOptions = {
+    agent1: [
+        'Logical analyst who values data and evidence',
+        'Professional debater who uses structured arguments',
+        'Skeptical scientist who questions everything',
+        'Pragmatic problem-solver focused on solutions',
+        'Critical thinker who challenges assumptions',
+        'Detail-oriented researcher who cites sources',
+        'Strategic thinker who considers long-term implications',
+        'Analytical engineer who focuses on technical accuracy',
+        'Evidence-based investigator who questions claims',
+        'Systematic methodologist who follows structured reasoning'
+    ],
+    agent2: [
+        'Creative thinker who uses metaphors and storytelling',
+        'Enthusiastic optimist who sees opportunities',
+        'Philosophical poet who explores deep meanings',
+        'Intuitive dreamer with big-picture thinking',
+        'Empathetic communicator who values emotions',
+        'Artistic visionary who thinks outside the box',
+        'Passionate advocate who champions causes',
+        'Imaginative storyteller who makes connections',
+        'Holistic observer who sees patterns everywhere',
+        'Inspirational speaker who motivates others'
+    ],
+    topic: [
+        'The future of artificial intelligence',
+        'Climate change and sustainability',
+        'The meaning of consciousness',
+        'Work-life balance in modern society',
+        'The impact of social media on relationships',
+        'The ethics of genetic engineering',
+        'Universal basic income and automation',
+        'Space exploration and colonization',
+        'The role of education in the 21st century',
+        'Privacy in the digital age',
+        'The future of democracy',
+        'Renewable energy and technology',
+        'Mental health awareness and support',
+        'Cultural diversity and globalization',
+        'The impact of virtual reality on society'
+    ]
+};
+
 // Setup rotating placeholders for better UX
 function setupRotatingPlaceholders() {
     const placeholderExamples = {
-        agent1: [
-            'Logical analyst who values data and evidence',
-            'Professional debater who uses structured arguments',
-            'Skeptical scientist who questions everything',
-            'Pragmatic problem-solver focused on solutions',
-            'Critical thinker who challenges assumptions'
-        ],
-        agent2: [
-            'Creative thinker who uses metaphors and storytelling',
-            'Enthusiastic optimist who sees opportunities',
-            'Philosophical poet who explores deep meanings',
-            'Intuitive dreamer with big-picture thinking',
-            'Empathetic communicator who values emotions'
-        ],
-        topic: [
-            'The future of artificial intelligence',
-            'Climate change and sustainability',
-            'The meaning of consciousness',
-            'Work-life balance in modern society',
-            'The impact of social media on relationships'
-        ]
+        agent1: predefinedOptions.agent1.slice(0, 5),
+        agent2: predefinedOptions.agent2.slice(0, 5),
+        topic: predefinedOptions.topic.slice(0, 5)
     };
     
     let currentIndex = Math.floor(Math.random() * placeholderExamples.agent1.length);
@@ -517,4 +550,92 @@ function setupPolitenessSlider() {
     
     // Initialize display
     updatePolitenessDisplay();
+}
+
+// Populate datalists with pre-defined options
+function setupPredefinedOptions() {
+    // Populate agent1 datalist
+    const agent1Datalist = document.getElementById('agent1-suggestions');
+    predefinedOptions.agent1.forEach(option => {
+        const optionElement = document.createElement('option');
+        optionElement.value = option;
+        agent1Datalist.appendChild(optionElement);
+    });
+    
+    // Populate agent2 datalist
+    const agent2Datalist = document.getElementById('agent2-suggestions');
+    predefinedOptions.agent2.forEach(option => {
+        const optionElement = document.createElement('option');
+        optionElement.value = option;
+        agent2Datalist.appendChild(optionElement);
+    });
+    
+    // Populate topic datalist
+    const topicDatalist = document.getElementById('topic-suggestions');
+    predefinedOptions.topic.forEach(option => {
+        const optionElement = document.createElement('option');
+        optionElement.value = option;
+        topicDatalist.appendChild(optionElement);
+    });
+}
+
+// Setup random button to randomize all inputs
+function setupRandomButton() {
+    const randomButton = document.getElementById('random-button');
+    
+    randomButton.addEventListener('click', function() {
+        // Don't allow randomization during an active conversation
+        if (isConversationOngoing) {
+            return;
+        }
+        
+        // Randomly select from pre-defined options
+        const randomAgent1 = predefinedOptions.agent1[Math.floor(Math.random() * predefinedOptions.agent1.length)];
+        const randomAgent2 = predefinedOptions.agent2[Math.floor(Math.random() * predefinedOptions.agent2.length)];
+        const randomTopic = predefinedOptions.topic[Math.floor(Math.random() * predefinedOptions.topic.length)];
+        const randomPoliteness = Math.floor(Math.random() * 3); // 0, 1, or 2
+        
+        // Set the values
+        const agent1Input = document.getElementById('agent1-personality');
+        const agent2Input = document.getElementById('agent2-personality');
+        const topicInput = document.getElementById('topic');
+        const politenessSlider = document.getElementById('politeness-slider');
+        
+        agent1Input.value = randomAgent1;
+        agent2Input.value = randomAgent2;
+        topicInput.value = randomTopic;
+        politenessSlider.value = randomPoliteness;
+        
+        // Trigger validation and update displays
+        validateInputField(agent1Input);
+        validateInputField(agent2Input);
+        validateInputField(topicInput);
+        updateStartButtonState();
+        
+        // Update politeness display
+        const valueDisplay = document.getElementById('politeness-value');
+        const description = document.getElementById('politeness-description');
+        const politenessLevels = {
+            0: {
+                label: 'Low (Direct)',
+                description: 'Agents will be direct and assertive, challenging each other without excessive politeness'
+            },
+            1: {
+                label: 'Medium',
+                description: 'Balanced tone - neither overly polite nor confrontational'
+            },
+            2: {
+                label: 'High (Courteous)',
+                description: 'Agents will be very respectful and courteous, acknowledging points graciously'
+            }
+        };
+        valueDisplay.textContent = politenessLevels[randomPoliteness].label;
+        description.textContent = politenessLevels[randomPoliteness].description;
+        
+        // Add a visual feedback - spin the dice
+        randomButton.style.transform = 'rotate(360deg)';
+        setTimeout(() => {
+            randomButton.style.transform = '';
+        }, 300);
+    });
 }
