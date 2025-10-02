@@ -27,7 +27,7 @@ public class OpenAIService : IOpenAIService
         _chatClient = client.GetChatClient(model);
     }
 
-    public async Task<string> GenerateResponseAsync(string personality, string topic, string history)
+    public async Task<string> GenerateResponseAsync(string personality, string topic, string history, string politenessLevel = "medium")
     {
         try
         {
@@ -59,9 +59,23 @@ public class OpenAIService : IOpenAIService
             // Build enhanced prompt with system and user messages for better context
             var messages = new List<ChatMessage>();
             
+            // Adjust tone based on politeness level
+            var toneGuidance = politenessLevel?.ToLower() switch
+            {
+                "low" => "Be direct and assertive. Challenge points you disagree with. " +
+                        "Avoid excessive politeness or overly agreeable language. " +
+                        "Focus on your perspective and don't hesitate to express disagreement or skepticism.",
+                "high" => "Be respectful and courteous. Acknowledge others' points graciously. " +
+                         "Use phrases like 'I appreciate your perspective' or 'That's a valid point'. " +
+                         "Maintain a collaborative and warm tone throughout.",
+                _ => "Be balanced in tone - neither overly polite nor too confrontational. " +
+                     "Engage thoughtfully with respect but without excessive pleasantries."
+            };
+            
             // System message to set up the agent's role and constraints
             var systemPrompt = $"You are {personality}. You are engaging in a thoughtful conversation about {topic}. " +
                              $"Stay true to your personality traits while being engaging and substantive. " +
+                             $"{toneGuidance} " +
                              $"Provide responses that are 2-4 sentences long, balancing depth with conciseness. " +
                              $"Build upon previous points when continuing the conversation.";
             messages.Add(new SystemChatMessage(systemPrompt));

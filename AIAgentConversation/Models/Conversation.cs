@@ -24,6 +24,9 @@ public class Conversation
     [MaxLength(50)]
     public string Status { get; set; } = "InProgress";
     
+    [MaxLength(20)]
+    public string PolitenessLevel { get; set; } = "medium";
+    
     public DateTime StartTime { get; set; }
     
     public DateTime? EndTime { get; set; }

@@ -53,6 +53,9 @@ document.addEventListener('DOMContentLoaded', function() {
     // Setup theme toggle
     setupThemeToggle();
     
+    // Setup politeness slider
+    setupPolitenessSlider();
+    
     // Export format buttons
     document.getElementById('export-json').addEventListener('click', () => {
         exportConversation('json');
@@ -143,6 +146,8 @@ async function startConversation() {
         const agent1Personality = document.getElementById('agent1-personality').value.trim();
         const agent2Personality = document.getElementById('agent2-personality').value.trim();
         const topic = document.getElementById('topic').value.trim();
+        const politenessSlider = document.getElementById('politeness-slider');
+        const politenessLevel = ['low', 'medium', 'high'][parseInt(politenessSlider.value)];
         
         if (!agent1Personality || !agent2Personality || !topic) {
             alert('Please fill in all fields');
@@ -178,7 +183,8 @@ async function startConversation() {
             body: JSON.stringify({
                 agent1Personality: agent1Personality,
                 agent2Personality: agent2Personality,
-                topic: topic
+                topic: topic,
+                politenessLevel: politenessLevel
             })
         });
         
@@ -478,4 +484,37 @@ async function exportConversation(format) {
     } catch (error) {
         displayError(error.message);
     }
+}
+
+// Setup politeness slider
+function setupPolitenessSlider() {
+    const slider = document.getElementById('politeness-slider');
+    const valueDisplay = document.getElementById('politeness-value');
+    const description = document.getElementById('politeness-description');
+    
+    const politenessLevels = {
+        0: {
+            label: 'Low (Direct)',
+            description: 'Agents will be direct and assertive, challenging each other without excessive politeness'
+        },
+        1: {
+            label: 'Medium',
+            description: 'Balanced tone - neither overly polite nor confrontational'
+        },
+        2: {
+            label: 'High (Courteous)',
+            description: 'Agents will be very respectful and courteous, acknowledging points graciously'
+        }
+    };
+    
+    function updatePolitenessDisplay() {
+        const level = parseInt(slider.value);
+        valueDisplay.textContent = politenessLevels[level].label;
+        description.textContent = politenessLevels[level].description;
+    }
+    
+    slider.addEventListener('input', updatePolitenessDisplay);
+    
+    // Initialize display
+    updatePolitenessDisplay();
 }
