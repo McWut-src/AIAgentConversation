@@ -63,40 +63,43 @@ public class OpenAIService : IOpenAIService
             // Adjust tone based on politeness level
             var toneGuidance = politenessLevel?.ToLower() switch
             {
-                "low" => "Be direct and assertive. Challenge points you disagree with. " +
-                        "Avoid excessive politeness or overly agreeable language. " +
-                        "Focus on your perspective and don't hesitate to express disagreement or skepticism.",
-                "high" => "Be respectful and courteous. Acknowledge others' points graciously. " +
-                         "Use phrases like 'I appreciate your perspective' or 'That's a valid point'. " +
-                         "Maintain a collaborative and warm tone throughout.",
-                _ => "Be balanced in tone - neither overly polite nor too confrontational. " +
-                     "Engage thoughtfully with respect but without excessive pleasantries."
+                "low" => "Be direct and assertive. Challenge points you disagree with and question assumptions. " +
+                        "Don't be agreeable - if you see flaws in reasoning, point them out. " +
+                        "Take strong positions and defend them with arguments. " +
+                        "Use phrases like 'I disagree because...', 'That overlooks...', 'But consider...'",
+                "high" => "Be respectful but still engaged. Acknowledge good points but also present counterpoints. " +
+                         "You can disagree politely: 'I see your point, but...', 'While that's valid, consider...'. " +
+                         "Balance courtesy with genuine intellectual exchange.",
+                _ => "Engage in genuine debate. Question claims, challenge reasoning, present counterarguments. " +
+                     "Don't just agree or build on points - push back when you have a different view. " +
+                     "Use phrases like 'But what about...', 'That raises the question...', 'I'd argue instead...'."
             };
             
             // Build phase-specific system prompt
             var phaseGuidance = phase switch
             {
                 ConversationPhase.Introduction => 
-                    "This is the INTRODUCTION phase. Introduce yourself briefly and share your initial perspective on the topic. " +
-                    "Keep it concise (2-3 sentences). Set the tone for the discussion ahead.",
+                    "This is the INTRODUCTION phase. Introduce yourself briefly and stake out your initial position on the topic. " +
+                    "Keep it concise (2-3 sentences). Set the tone for genuine debate.",
                 
                 ConversationPhase.Conversation => 
-                    "This is the CONVERSATION phase. Engage deeply with the points made. " +
-                    "Challenge ideas, build on arguments, or present counterpoints. " +
-                    "Provide responses that are 2-4 sentences long, balancing depth with conciseness. " +
-                    "Build upon previous points when continuing the conversation.",
+                    "This is the CONVERSATION phase. This is a real debate - engage critically with what's been said. " +
+                    "Don't just agree and elaborate. Challenge assumptions, question logic, present alternative views. " +
+                    "If you disagree, say so and explain why. If you see a flaw in reasoning, point it out. " +
+                    "Provide responses that are 2-4 sentences long. Ask probing questions. Defend your position.",
                 
                 ConversationPhase.Conclusion => 
-                    "This is the CONCLUSION phase. Summarize your key points from the conversation. " +
-                    "Reflect on what was discussed and provide a thoughtful closing statement (2-3 sentences). " +
-                    "You may acknowledge valid points made by the other agent while reinforcing your perspective.",
+                    "This is the CONCLUSION phase. Summarize your key arguments from the debate. " +
+                    "Reflect on the strongest points made and reinforce where you stand (2-3 sentences). " +
+                    "You can acknowledge worthy opposing points, but maintain your distinct perspective.",
                 
-                _ => "Engage thoughtfully in this conversation."
+                _ => "Engage in genuine intellectual exchange with real disagreement where warranted."
             };
             
             // System message to set up the agent's role and constraints
-            var systemPrompt = $"You are {personality}. You are engaging in a thoughtful conversation about {topic}. " +
-                             $"Stay true to your personality traits while being engaging and substantive. " +
+            var systemPrompt = $"You are {personality}. You are engaged in a genuine debate about {topic}. " +
+                             $"This is NOT just polite conversation - it's an exchange of ideas where disagreement is expected and valuable. " +
+                             $"Stay true to your personality traits while being engaging and intellectually honest. " +
                              $"{toneGuidance} " +
                              $"{phaseGuidance}";
             messages.Add(new SystemChatMessage(systemPrompt));
@@ -121,11 +124,12 @@ public class OpenAIService : IOpenAIService
                 userPrompt = phase switch
                 {
                     ConversationPhase.Conclusion => 
-                        $"Here is the conversation so far:\n{history}\n\n" +
-                        $"Now provide your CONCLUSION. Summarize your key points and provide a thoughtful closing statement.",
+                        $"Here is the debate so far:\n{history}\n\n" +
+                        $"Now provide your CONCLUSION. Summarize your key arguments and reinforce your position.",
                     _ => 
-                        $"Here is the conversation so far:\n{history}\n\n" +
-                        $"Respond to the conversation above, addressing points made while staying in character as {personality}."
+                        $"Here is the debate so far:\n{history}\n\n" +
+                        $"Respond critically to what's been said. Don't just agree - if you see flaws, questionable logic, or alternative perspectives, bring them up. " +
+                        $"Stay in character as {personality} and defend your viewpoint."
                 };
             }
             messages.Add(new UserChatMessage(userPrompt));
