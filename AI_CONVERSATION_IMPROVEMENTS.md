@@ -346,7 +346,7 @@ No changes required to configuration. The system uses existing settings:
 {
   "OpenAI": {
     "Model": "gpt-3.5-turbo",
-    "MaxTokens": 500,
+    "MaxTokens": 250,
     "Temperature": 0.7
   }
 }

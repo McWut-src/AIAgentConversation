@@ -85,7 +85,7 @@ The conversation length determines how many back-and-forth exchanges occur in Ph
 **In the UI:**
 1. Use the "Conversation Length" slider
 2. Range: 1-10 exchanges
-3. Default: 3 exchanges
+3. Default: 5 exchanges
 
 **Via API:**
 ```json
@@ -104,8 +104,8 @@ Total Messages = 2 (intro) + (conversationLength × 2) + 2 (conclusion)
 
 Examples:
 - Length 1: 2 + 2 + 2 = 6 messages
-- Length 3: 2 + 6 + 2 = 10 messages (default)
-- Length 5: 2 + 10 + 2 = 14 messages
+- Length 3: 2 + 6 + 2 = 10 messages
+- Length 5: 2 + 10 + 2 = 14 messages (default)
 - Length 10: 2 + 20 + 2 = 24 messages
 ```
 
@@ -115,7 +115,7 @@ In `appsettings.json`:
 ```json
 {
   "Conversation": {
-    "DefaultConversationLength": 3,
+    "DefaultConversationLength": 5,
     "MinConversationLength": 1,
     "MaxConversationLength": 10
   }

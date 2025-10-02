@@ -39,7 +39,7 @@ The original request was to:
 - UI slider: 1-10 exchanges
 - API parameter: `conversationLength`
 - Config file: `appsettings.json`
-- Default: 3 exchanges (10 total messages)
+- Default: 5 exchanges (14 total messages)
 
 **Total Message Calculation:**
 ```
@@ -47,8 +47,8 @@ Total = 2 (intro) + (length × 2) + 2 (conclusion)
 
 Examples:
 - Length 1: 6 messages
-- Length 3: 10 messages (default)
-- Length 5: 14 messages
+- Length 3: 10 messages
+- Length 5: 14 messages (default)
 - Length 10: 24 messages
 ```
 
@@ -359,7 +359,7 @@ dotnet ef database update
    // appsettings.json
    {
      "Conversation": {
-       "DefaultConversationLength": 3,
+       "DefaultConversationLength": 5,
        "MinConversationLength": 1,
        "MaxConversationLength": 10
      }

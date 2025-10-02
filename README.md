@@ -831,7 +831,7 @@ The application will start at:
   "OpenAI": {
     "ApiKey": "", // Set via user secrets
     "Model": "gpt-3.5-turbo",
-    "MaxTokens": 500,
+    "MaxTokens": 250,
     "Temperature": 0.7
   },
   "Conversation": {
@@ -859,7 +859,7 @@ The application will start at:
 | Setting | Description | Default | Notes |
 |---------|-------------|---------|-------|
 | `OpenAI:Model` | OpenAI model to use | `gpt-3.5-turbo` | Fixed in implementation |
-| `OpenAI:MaxTokens` | Maximum tokens per response | `500` | Reasonable limit |
+| `OpenAI:MaxTokens` | Maximum tokens per response | `250` | Reduced for brevity |
 | `OpenAI:Temperature` | Creativity level (0.0-2.0) | `0.7` | Balanced creativity |
 | `Conversation:IterationCount` | Conversation exchanges | `3` | **Fixed - not user configurable** |
 
