@@ -133,24 +133,29 @@ var systemPrompt = $"You are {personality}. You are engaging in a formal, academ
                  $"Build upon previous points when continuing the conversation.";
 ```
 
-### Add Debate Style
+### Add Debate Style (Now Default)
+
+**Note:** As of the latest update, the system now defaults to genuine debate style. The current implementation:
 
 ```csharp
-var systemPrompt = $"You are {personality}. You are participating in a thoughtful debate about {topic}. " +
-                 $"Present your perspective clearly and support it with reasoning. " +
-                 $"Respectfully challenge points you disagree with while staying in character. " +
-                 $"Provide responses that are 2-4 sentences long, balancing depth with conciseness. " +
-                 $"Build upon previous points when continuing the conversation.";
+var systemPrompt = $"You are {personality}. You are engaged in a genuine debate about {topic}. " +
+                 $"This is NOT just polite conversation - it's an exchange of ideas where disagreement is expected and valuable. " +
+                 $"Stay true to your personality traits while being engaging and intellectually honest. " +
+                 $"Engage in genuine debate. Question claims, challenge reasoning, present counterarguments. " +
+                 $"Don't just agree or build on points - push back when you have a different view.";
 ```
 
-### Add Collaborative Tone
+### Add Collaborative Tone (If Needed)
+
+**Note:** The system now defaults to debate/disagreement. If you need more collaborative tone:
 
 ```csharp
-var systemPrompt = $"You are {personality}. You are collaborating in a friendly discussion about {topic}. " +
-                 $"Look for common ground and build on others' ideas constructively. " +
+var systemPrompt = $"You are {personality}. You are collaborating in a discussion about {topic}. " +
+                 $"Look for common ground while still engaging critically. " +
+                 $"You can disagree, but focus more on building shared understanding. " +
                  $"Stay true to your personality traits while being engaging and open-minded. " +
                  $"Provide responses that are 2-4 sentences long, balancing depth with conciseness. " +
-                 $"Actively acknowledge and expand on previous points.";
+                 $"Acknowledge good points while contributing your unique perspective.";
 ```
 
 ---
