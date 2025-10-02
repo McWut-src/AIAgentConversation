@@ -50,6 +50,9 @@ document.addEventListener('DOMContentLoaded', function() {
     // Set up rotating placeholders
     setupRotatingPlaceholders();
     
+    // Setup theme toggle
+    setupThemeToggle();
+    
     // Export format buttons
     document.getElementById('export-json').addEventListener('click', () => {
         exportConversation('json');
@@ -399,6 +402,31 @@ function setupRotatingPlaceholders() {
     
     // Rotate every 5 seconds
     setInterval(rotatePlaceholders, 5000);
+}
+
+// Setup theme toggle for dark mode
+function setupThemeToggle() {
+    const themeToggle = document.getElementById('theme-toggle');
+    
+    // Check for saved theme preference or default to light mode
+    const currentTheme = localStorage.getItem('theme') || 'light';
+    if (currentTheme === 'dark') {
+        document.body.classList.add('dark-mode');
+        themeToggle.textContent = '☀️';
+    }
+    
+    themeToggle.addEventListener('click', function() {
+        document.body.classList.toggle('dark-mode');
+        
+        // Update button icon and save preference
+        if (document.body.classList.contains('dark-mode')) {
+            themeToggle.textContent = '☀️';
+            localStorage.setItem('theme', 'dark');
+        } else {
+            themeToggle.textContent = '🌙';
+            localStorage.setItem('theme', 'light');
+        }
+    });
 }
 
 // Export conversation in selected format

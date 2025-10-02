@@ -28,9 +28,173 @@ body {
   padding: 20px;
 }
 
+.header-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+}
+
 .container h1 {
   text-align: center;
-  margin-bottom: 30px;
+  margin: 0;
+  flex-grow: 1;
+}
+
+/* Theme Toggle Button */
+.theme-toggle {
+  background: none;
+  border: 2px solid #dee2e6;
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  font-size: 24px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+}
+
+.theme-toggle:hover {
+  transform: scale(1.1);
+  border-color: #007bff;
+}
+
+/* Dark Mode Styles */
+body.dark-mode {
+  background-color: #1a1a1a;
+  color: #e0e0e0;
+}
+
+.dark-mode .container {
+  color: #e0e0e0;
+}
+
+.dark-mode h1 {
+  color: #f0f0f0;
+}
+
+.dark-mode .input-form {
+  background-color: #2d2d2d;
+  border: 1px solid #404040;
+}
+
+.dark-mode .form-group label {
+  color: #e0e0e0;
+}
+
+.dark-mode .form-group input[type="text"] {
+  background-color: #1a1a1a;
+  border-color: #404040;
+  color: #e0e0e0;
+}
+
+.dark-mode .form-group input[type="text"]:focus {
+  background-color: #2d2d2d;
+  box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25);
+}
+
+.dark-mode #start-button {
+  background-color: #0056b3;
+}
+
+.dark-mode #start-button:hover {
+  background-color: #004494;
+}
+
+.dark-mode #export-button {
+  background-color: #1e7e34;
+}
+
+.dark-mode #export-button:hover {
+  background-color: #155d27;
+}
+
+.dark-mode .export-dropdown {
+  background-color: #2d2d2d;
+  border-color: #404040;
+}
+
+.dark-mode .export-option {
+  background-color: #2d2d2d;
+  color: #e0e0e0;
+  border-color: #404040;
+}
+
+.dark-mode .export-option:hover {
+  background-color: #3d3d3d;
+}
+
+.dark-mode .progress-indicator {
+  background-color: #2d2d2d;
+  border-color: #404040;
+}
+
+.dark-mode .progress-text {
+  color: #e0e0e0;
+}
+
+.dark-mode .progress-bar-container {
+  background-color: #404040;
+}
+
+.dark-mode .completion-indicator {
+  background-color: #1e4620;
+  color: #c3e6cb;
+  border-color: #28a745;
+}
+
+.dark-mode .copy-button {
+  background-color: #495057;
+}
+
+.dark-mode .copy-button:hover {
+  background-color: #383f45;
+}
+
+.dark-mode .error-message {
+  background-color: #4a1f23;
+  color: #f8d7da;
+  border-color: #721c24;
+}
+
+.dark-mode .theme-toggle {
+  border-color: #404040;
+  background-color: #2d2d2d;
+}
+
+/* Info Banner */
+.info-banner {
+  background-color: #e7f3ff;
+  border: 1px solid #b3d9ff;
+  border-radius: 8px;
+  padding: 12px 16px;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.info-icon {
+  font-size: 20px;
+  flex-shrink: 0;
+}
+
+.info-text {
+  font-size: 14px;
+  color: #004085;
+  line-height: 1.5;
+}
+
+.dark-mode .info-banner {
+  background-color: #1a3a52;
+  border-color: #2d5a7b;
+}
+
+.dark-mode .info-text {
+  color: #b3d9ff;
 }
 
 .input-form {
@@ -49,6 +213,17 @@ body {
   font-weight: 600;
   margin-bottom: 5px;
   font-size: 14px;
+}
+
+.char-hint {
+  font-weight: normal;
+  font-size: 12px;
+  color: #6c757d;
+  font-style: italic;
+}
+
+.dark-mode .char-hint {
+  color: #999;
 }
 
 .form-group input[type="text"] {
