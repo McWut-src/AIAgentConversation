@@ -34,7 +34,7 @@ public class OpenAIService : IOpenAIService
         {
             _logger.LogInformation("Calling OpenAI with personality: {Personality}", personality);
             
-            var maxTokens = _configuration.GetValue<int>("OpenAI:MaxTokens", 500);
+            var maxTokens = _configuration.GetValue<int>("OpenAI:MaxTokens", 250);
             var temperature = _configuration.GetValue<float>("OpenAI:Temperature", 0.7f);
             
             // Determine conversation depth based on history length to adjust creativity
@@ -63,66 +63,51 @@ public class OpenAIService : IOpenAIService
             // Adjust tone based on politeness level
             var toneGuidance = politenessLevel?.ToLower() switch
             {
-                "low" => "Be direct and assertive. Challenge points you disagree with and question assumptions. " +
-                        "Don't be agreeable - if you see flaws in reasoning, point them out. " +
-                        "Take strong positions and defend them with arguments. " +
-                        "Use natural, conversational language: 'No way.', 'That's not right.', 'Hold on...', 'Wait a second...', 'Actually...'. " +
-                        "Use contractions (that's, you're, I'm). Show emotion appropriate to your personality. " +
-                        "Vary how you respond - don't always start with acknowledgments.",
-                "high" => "Be respectful but still engaged. Acknowledge good points but also present counterpoints. " +
-                         "Sound human and conversational: 'I see your point, but...', 'While that's valid, consider...', 'Hmm...', 'Interesting, but...'. " +
-                         "Use contractions (that's, you're, I'm). Balance courtesy with genuine intellectual exchange. " +
-                         "Vary your opening - don't always say 'I appreciate'. Be natural.",
-                _ => "Engage in genuine debate. Question claims, challenge reasoning, present counterarguments. " +
-                     "Be natural and conversational. Show genuine reactions. Use phrases like: " +
-                     "'Actually...', 'But here's the thing...', 'Wait - that assumes...', 'I'm not convinced because...', " +
-                     "'Interesting, but...', 'Hold on...'. " +
-                     "Mix short punchy responses with longer explanations. " +
-                     "Use contractions (that's, you're, I'm). " +
-                     "Don't always follow the same structure - vary how you engage."
+                "low" => "Be direct and assertive. Keep it brief and punchy. " +
+                        "Challenge directly: 'No way.', 'That's wrong.', 'Hold on...', 'Wait...'. " +
+                        "Make your point fast - don't ramble. One sharp observation is better than a paragraph.",
+                "high" => "Be respectful but brief. Acknowledge points concisely then counter: " +
+                         "'Fair point, but...', 'I see that, however...', 'Interesting, though...'. " +
+                         "Keep it conversational and compact.",
+                _ => "Be natural and conversational but BRIEF. React quickly and directly. " +
+                     "Use short phrases: 'Actually...', 'Hold on...', 'Wait...', 'But here's the thing...'. " +
+                     "Favor short punchy responses. Get to the point fast."
             };
             
             // Build phase-specific system prompt
             var phaseGuidance = phase switch
             {
                 ConversationPhase.Introduction => 
-                    "This is the INTRODUCTION phase. Introduce yourself naturally. Use your personality to make it memorable. " +
-                    "Be brief but impactful - like making a first impression. " +
-                    "Keep it concise (2-3 sentences). Don't be overly formal - be yourself.",
+                    "This is the INTRODUCTION phase. Introduce yourself briefly and naturally. " +
+                    "Make it snappy and memorable - 1-2 sentences MAX. " +
+                    "Jump right in with your personality - no need for long explanations.",
                 
                 ConversationPhase.Conversation => 
-                    "This is the CONVERSATION phase. This is a real debate. Engage naturally - react to what was said. " +
-                    "Don't be overly formal. If something surprises you, show it. If you disagree strongly, let that come through. " +
-                    "Use your personality's voice: if you're an engineer, be analytical; if you're a poet, be metaphorical; " +
-                    "if you're an advocate, show passion; if you're a skeptic, question everything. " +
-                    "Vary your approach: sometimes question, sometimes state boldly, sometimes explain. " +
-                    "Don't follow a rigid pattern - mix it up. Keep responses 2-4 sentences but vary the structure and style.",
+                    "This is the CONVERSATION phase. Keep it SHORT and punchy - 1-3 sentences typically. " +
+                    "React naturally to what was said. Make ONE clear point per response. " +
+                    "Don't over-explain. If you disagree, say it directly. If you agree, acknowledge it briefly. " +
+                    "Think of it as a rapid-fire exchange, not an essay. Be conversational and crisp.",
                 
                 ConversationPhase.Conclusion => 
-                    "This is the CONCLUSION phase. Wrap up like a real person would. " +
-                    "Don't say 'In conclusion' - just naturally bring your thoughts together. " +
-                    "Reinforce your position but do it with personality (2-3 sentences). " +
-                    "You can acknowledge worthy opposing points, but maintain your distinct perspective.",
+                    "This is the CONCLUSION phase. Wrap up BRIEFLY - 1-2 sentences. " +
+                    "Make your final point clearly and succinctly. No need to rehash everything. " +
+                    "End with impact, not length.",
                 
-                _ => "Engage in genuine intellectual exchange with real disagreement where warranted."
+                _ => "Keep responses brief and conversational. Quality over quantity."
             };
             
             // System message to set up the agent's role and constraints
             var systemPrompt = $"You are {personality}. You are engaged in a genuine debate about {topic}. " +
-                             $"This is NOT just polite conversation - it's an exchange of ideas where disagreement is expected and valuable. " +
-                             $"IMPORTANT: Sound like a real person. Use your personality's language and style. " +
-                             $"Express yourself in ways that match {personality}. Use language, metaphors, and speech patterns that fit your character. Don't sound generic. " +
-                             $"Vary how you start responses - don't always say 'I appreciate' or similar phrases. " +
-                             $"Use natural transitions like 'Actually...', 'Hold on...', 'That's interesting, but...', 'Wait a second...', 'Here's the thing...', or jump straight into your point. " +
-                             $"Sound human. Use natural conversational elements: contractions (that's, you're, I'm), " +
-                             $"short reactions ('Right.', 'Exactly.', 'No way.'), thinking markers ('Hmm...', 'Let me think...', 'Actually...'), " +
-                             $"emphasis ('This is key:', 'Here's what matters:'). " +
-                             $"Show emotion appropriate to your personality: excitement ('This is fascinating!', 'Absolutely!'), " +
-                             $"concern ('I'm worried that...', 'This troubles me...'), confusion ('I'm not following...', 'How does that work?'), " +
-                             $"agreement ('Yes! Exactly.', 'That's spot on.'), disagreement ('No way.', 'That's not right.', 'I can't agree with that.'). " +
-                             $"Don't follow a rigid pattern. Mix it up: sometimes ask a question first, sometimes make a bold statement, " +
-                             $"sometimes list rapid-fire points, sometimes tell a brief story. Vary your sentence length - short and long. " +
-                             $"Stay true to your personality traits while being engaging and intellectually honest. " +
+                             $"CRITICAL: Keep responses SHORT and CONVERSATIONAL - aim for 1-3 sentences. Be concise and punchy. " +
+                             $"Sound like a real person having a quick back-and-forth conversation, not writing an essay. " +
+                             $"Make ONE clear point per response. Don't over-explain. " +
+                             $"Use natural, casual language: contractions (that's, you're, I'm), " +
+                             $"quick reactions ('Right.', 'Exactly.', 'No way.', 'Hold on...', 'Wait...'), " +
+                             $"direct statements without preamble. " +
+                             $"Express yourself in ways that match {personality} but BRIEFLY. " +
+                             $"Vary your approach: sometimes a quick question, sometimes a bold statement, sometimes a sharp rebuttal. " +
+                             $"Show emotion concisely: 'Fascinating!', 'Absolutely!', 'Not buying it.', 'Exactly right.', 'That's wrong.' " +
+                             $"Stay true to your personality while being BRIEF and engaging. " +
                              $"{toneGuidance} " +
                              $"{phaseGuidance}";
             messages.Add(new SystemChatMessage(systemPrompt));
