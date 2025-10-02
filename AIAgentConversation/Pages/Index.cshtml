@@ -5,22 +5,30 @@
 }
 
 <div class="container">
-    <h1>AI Agent Conversation</h1>
+    <div class="header-container">
+        <h1>AI Agent Conversation</h1>
+        <button id="theme-toggle" class="theme-toggle" title="Toggle dark mode">🌙</button>
+    </div>
+    
+    <div class="info-banner">
+        <span class="info-icon">ℹ️</span>
+        <span class="info-text">Two AI agents will engage in a 3-round conversation (6 messages total) on your chosen topic.</span>
+    </div>
     
     <div class="input-form">
         <div class="form-group">
-            <label for="agent1-personality">Agent 1 Personality:</label>
-            <input type="text" id="agent1-personality" placeholder="e.g., Logical analyst who values data and evidence" />
+            <label for="agent1-personality">Agent 1 Personality: <span class="char-hint">(min 3 characters)</span></label>
+            <input type="text" id="agent1-personality" placeholder="e.g., Logical analyst who values data and evidence" maxlength="500" />
         </div>
         
         <div class="form-group">
-            <label for="agent2-personality">Agent 2 Personality:</label>
-            <input type="text" id="agent2-personality" placeholder="e.g., Creative thinker who uses metaphors and storytelling" />
+            <label for="agent2-personality">Agent 2 Personality: <span class="char-hint">(min 3 characters)</span></label>
+            <input type="text" id="agent2-personality" placeholder="e.g., Creative thinker who uses metaphors and storytelling" maxlength="500" />
         </div>
         
         <div class="form-group">
-            <label for="topic">Conversation Topic:</label>
-            <input type="text" id="topic" placeholder="e.g., The future of artificial intelligence" />
+            <label for="topic">Conversation Topic: <span class="char-hint">(min 3 characters)</span></label>
+            <input type="text" id="topic" placeholder="e.g., The future of artificial intelligence" maxlength="1000" />
         </div>
         
         <button id="start-button">Start Conversation</button>

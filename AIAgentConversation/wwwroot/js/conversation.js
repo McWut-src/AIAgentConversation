@@ -7,6 +7,27 @@ document.addEventListener('DOMContentLoaded', function() {
     const startButton = document.getElementById('start-button');
     startButton.addEventListener('click', startConversation);
     
+    // Add keyboard shortcut - Enter to start conversation
+    const inputFields = [
+        document.getElementById('agent1-personality'),
+        document.getElementById('agent2-personality'),
+        document.getElementById('topic')
+    ];
+    
+    inputFields.forEach(field => {
+        field.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter' && !startButton.disabled) {
+                startConversation();
+            }
+        });
+        
+        // Add real-time validation feedback
+        field.addEventListener('input', function() {
+            validateInputField(field);
+            updateStartButtonState();
+        });
+    });
+    
     // Setup export button dropdown handlers
     const exportButton = document.getElementById('export-button');
     const exportDropdown = document.getElementById('export-dropdown');
@@ -25,6 +46,12 @@ document.addEventListener('DOMContentLoaded', function() {
     exportDropdown.addEventListener('click', function(e) {
         e.stopPropagation();
     });
+    
+    // Set up rotating placeholders
+    setupRotatingPlaceholders();
+    
+    // Setup theme toggle
+    setupThemeToggle();
     
     // Export format buttons
     document.getElementById('export-json').addEventListener('click', () => {
@@ -64,13 +91,44 @@ function createWaitingIndicator(side) {
     return div;
 }
 
+// Validate input field
+function validateInputField(field) {
+    const value = field.value.trim();
+    const minLength = 3;
+    
+    if (value.length === 0) {
+        field.style.borderColor = '#ced4da';
+        field.style.backgroundColor = '';
+    } else if (value.length < minLength) {
+        field.style.borderColor = '#dc3545';
+        field.style.backgroundColor = '#fff5f5';
+    } else {
+        field.style.borderColor = '#28a745';
+        field.style.backgroundColor = '#f0fff4';
+    }
+}
+
+// Update start button state based on input validity
+function updateStartButtonState() {
+    const agent1 = document.getElementById('agent1-personality').value.trim();
+    const agent2 = document.getElementById('agent2-personality').value.trim();
+    const topic = document.getElementById('topic').value.trim();
+    const startButton = document.getElementById('start-button');
+    
+    const allValid = agent1.length >= 3 && agent2.length >= 3 && topic.length >= 3;
+    
+    if (!isConversationOngoing) {
+        startButton.style.opacity = allValid ? '1' : '0.6';
+    }
+}
+
 // Display error message
 function displayError(message) {
     console.error('Error:', message);
     const container = document.getElementById('conversation-container');
     const errorDiv = document.createElement('div');
     errorDiv.className = 'error-message';
-    errorDiv.textContent = `Error: ${message}`;
+    errorDiv.innerHTML = `<strong>Error:</strong> ${message}<br><small>Please refresh the page to try again.</small>`;
     container.appendChild(errorDiv);
     
     // Re-enable start button
@@ -103,6 +161,9 @@ async function startConversation() {
         container.innerHTML = '';
         // Ensure container is always visible
         container.style.display = 'block';
+        
+        // Add progress indicator
+        addProgressIndicator(container, 1);
 
         // Show initial waiting indicator (left for A1)
         const waitingIndicator = createWaitingIndicator('left');
@@ -186,6 +247,9 @@ async function continueConversation() {
         const messageBubble = createMessageBubble(data.message, data.agentType);
         container.appendChild(messageBubble);
         
+        // Update progress indicator
+        updateProgressIndicator(container, data.totalMessages);
+        
         // Check ongoing flag and recurse
         if (data.isOngoing) {
             // Determine next waiting indicator side
@@ -216,6 +280,153 @@ function enableExportButton() {
     // Keep conversation container visible with all bubbles
     const container = document.getElementById('conversation-container');
     container.style.display = 'block';
+    
+    // Add completion indicator
+    addCompletionIndicator();
+    
+    // Add copy to clipboard button
+    addCopyButton();
+}
+
+// Add completion indicator
+function addCompletionIndicator() {
+    const container = document.getElementById('conversation-container');
+    const completionDiv = document.createElement('div');
+    completionDiv.className = 'completion-indicator';
+    completionDiv.innerHTML = '✓ Conversation completed successfully';
+    container.appendChild(completionDiv);
+}
+
+// Add copy to clipboard button
+function addCopyButton() {
+    const container = document.getElementById('conversation-container');
+    const copyButton = document.createElement('button');
+    copyButton.className = 'copy-button';
+    copyButton.innerHTML = '📋 Copy Conversation';
+    copyButton.onclick = copyConversationToClipboard;
+    container.appendChild(copyButton);
+}
+
+// Copy conversation to clipboard
+function copyConversationToClipboard() {
+    const container = document.getElementById('conversation-container');
+    const bubbles = container.querySelectorAll('.message-bubble-a1, .message-bubble-a2');
+    
+    let text = 'AI Agent Conversation\n';
+    text += '======================\n\n';
+    
+    bubbles.forEach((bubble, index) => {
+        const agentType = bubble.className.includes('a1') ? 'Agent 1' : 'Agent 2';
+        text += `${agentType}: ${bubble.textContent}\n\n`;
+    });
+    
+    navigator.clipboard.writeText(text).then(() => {
+        // Show success feedback
+        const copyButton = container.querySelector('.copy-button');
+        const originalText = copyButton.innerHTML;
+        copyButton.innerHTML = '✓ Copied!';
+        copyButton.style.backgroundColor = '#28a745';
+        
+        setTimeout(() => {
+            copyButton.innerHTML = originalText;
+            copyButton.style.backgroundColor = '';
+        }, 2000);
+    }).catch(err => {
+        console.error('Failed to copy:', err);
+        alert('Failed to copy to clipboard');
+    });
+}
+
+// Add progress indicator
+function addProgressIndicator(container, currentMessage) {
+    const progressDiv = document.createElement('div');
+    progressDiv.className = 'progress-indicator';
+    progressDiv.id = 'progress-indicator';
+    progressDiv.innerHTML = `<span class="progress-text">Message ${currentMessage} of 6</span>
+        <div class="progress-bar-container">
+            <div class="progress-bar" style="width: ${(currentMessage / 6) * 100}%"></div>
+        </div>`;
+    container.insertBefore(progressDiv, container.firstChild);
+}
+
+// Update progress indicator
+function updateProgressIndicator(container, currentMessage) {
+    const progressIndicator = document.getElementById('progress-indicator');
+    if (progressIndicator) {
+        progressIndicator.querySelector('.progress-text').textContent = `Message ${currentMessage} of 6`;
+        progressIndicator.querySelector('.progress-bar').style.width = `${(currentMessage / 6) * 100}%`;
+    }
+}
+
+// Setup rotating placeholders for better UX
+function setupRotatingPlaceholders() {
+    const placeholderExamples = {
+        agent1: [
+            'Logical analyst who values data and evidence',
+            'Professional debater who uses structured arguments',
+            'Skeptical scientist who questions everything',
+            'Pragmatic problem-solver focused on solutions',
+            'Critical thinker who challenges assumptions'
+        ],
+        agent2: [
+            'Creative thinker who uses metaphors and storytelling',
+            'Enthusiastic optimist who sees opportunities',
+            'Philosophical poet who explores deep meanings',
+            'Intuitive dreamer with big-picture thinking',
+            'Empathetic communicator who values emotions'
+        ],
+        topic: [
+            'The future of artificial intelligence',
+            'Climate change and sustainability',
+            'The meaning of consciousness',
+            'Work-life balance in modern society',
+            'The impact of social media on relationships'
+        ]
+    };
+    
+    let currentIndex = Math.floor(Math.random() * placeholderExamples.agent1.length);
+    
+    function rotatePlaceholders() {
+        document.getElementById('agent1-personality').placeholder = 
+            `e.g., ${placeholderExamples.agent1[currentIndex]}`;
+        document.getElementById('agent2-personality').placeholder = 
+            `e.g., ${placeholderExamples.agent2[currentIndex]}`;
+        document.getElementById('topic').placeholder = 
+            `e.g., ${placeholderExamples.topic[currentIndex]}`;
+        
+        currentIndex = (currentIndex + 1) % placeholderExamples.agent1.length;
+    }
+    
+    // Set initial placeholders
+    rotatePlaceholders();
+    
+    // Rotate every 5 seconds
+    setInterval(rotatePlaceholders, 5000);
+}
+
+// Setup theme toggle for dark mode
+function setupThemeToggle() {
+    const themeToggle = document.getElementById('theme-toggle');
+    
+    // Check for saved theme preference or default to light mode
+    const currentTheme = localStorage.getItem('theme') || 'light';
+    if (currentTheme === 'dark') {
+        document.body.classList.add('dark-mode');
+        themeToggle.textContent = '☀️';
+    }
+    
+    themeToggle.addEventListener('click', function() {
+        document.body.classList.toggle('dark-mode');
+        
+        // Update button icon and save preference
+        if (document.body.classList.contains('dark-mode')) {
+            themeToggle.textContent = '☀️';
+            localStorage.setItem('theme', 'dark');
+        } else {
+            themeToggle.textContent = '🌙';
+            localStorage.setItem('theme', 'light');
+        }
+    });
 }
 
 // Export conversation in selected format
