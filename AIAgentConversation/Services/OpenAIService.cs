@@ -1,4 +1,5 @@
 using OpenAI.Chat;
+using AIAgentConversation.Models;
 
 namespace AIAgentConversation.Services;
 
@@ -27,7 +28,7 @@ public class OpenAIService : IOpenAIService
         _chatClient = client.GetChatClient(model);
     }
 
-    public async Task<string> GenerateResponseAsync(string personality, string topic, string history, string politenessLevel = "medium")
+    public async Task<string> GenerateResponseAsync(string personality, string topic, string history, string politenessLevel = "medium", ConversationPhase phase = ConversationPhase.Conversation)
     {
         try
         {
@@ -72,26 +73,60 @@ public class OpenAIService : IOpenAIService
                      "Engage thoughtfully with respect but without excessive pleasantries."
             };
             
+            // Build phase-specific system prompt
+            var phaseGuidance = phase switch
+            {
+                ConversationPhase.Introduction => 
+                    "This is the INTRODUCTION phase. Introduce yourself briefly and share your initial perspective on the topic. " +
+                    "Keep it concise (2-3 sentences). Set the tone for the discussion ahead.",
+                
+                ConversationPhase.Conversation => 
+                    "This is the CONVERSATION phase. Engage deeply with the points made. " +
+                    "Challenge ideas, build on arguments, or present counterpoints. " +
+                    "Provide responses that are 2-4 sentences long, balancing depth with conciseness. " +
+                    "Build upon previous points when continuing the conversation.",
+                
+                ConversationPhase.Conclusion => 
+                    "This is the CONCLUSION phase. Summarize your key points from the conversation. " +
+                    "Reflect on what was discussed and provide a thoughtful closing statement (2-3 sentences). " +
+                    "You may acknowledge valid points made by the other agent while reinforcing your perspective.",
+                
+                _ => "Engage thoughtfully in this conversation."
+            };
+            
             // System message to set up the agent's role and constraints
             var systemPrompt = $"You are {personality}. You are engaging in a thoughtful conversation about {topic}. " +
                              $"Stay true to your personality traits while being engaging and substantive. " +
                              $"{toneGuidance} " +
-                             $"Provide responses that are 2-4 sentences long, balancing depth with conciseness. " +
-                             $"Build upon previous points when continuing the conversation.";
+                             $"{phaseGuidance}";
             messages.Add(new SystemChatMessage(systemPrompt));
             
-            // User message with the conversation context
+            // User message with the conversation context (phase-specific)
             string userPrompt;
             if (string.IsNullOrEmpty(history))
             {
-                // First message - introduce the topic thoughtfully
-                userPrompt = $"Begin a conversation on the topic: {topic}. Share your initial perspective based on your personality.";
+                // First message - introduction phase
+                userPrompt = phase switch
+                {
+                    ConversationPhase.Introduction => 
+                        $"Introduce yourself and share your initial perspective on: {topic}. " +
+                        $"Keep it brief and engaging as this is just the introduction.",
+                    _ => 
+                        $"Begin a conversation on the topic: {topic}. Share your initial perspective based on your personality."
+                };
             }
             else
             {
                 // Continuing conversation - provide history and ask for response
-                userPrompt = $"Here is the conversation so far:\n{history}\n\n" +
-                           $"Respond to the conversation above, addressing points made while staying in character as {personality}.";
+                userPrompt = phase switch
+                {
+                    ConversationPhase.Conclusion => 
+                        $"Here is the conversation so far:\n{history}\n\n" +
+                        $"Now provide your CONCLUSION. Summarize your key points and provide a thoughtful closing statement.",
+                    _ => 
+                        $"Here is the conversation so far:\n{history}\n\n" +
+                        $"Respond to the conversation above, addressing points made while staying in character as {personality}."
+                };
             }
             messages.Add(new UserChatMessage(userPrompt));
             

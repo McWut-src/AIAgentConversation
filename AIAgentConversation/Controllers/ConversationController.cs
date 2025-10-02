@@ -53,6 +53,13 @@ public class ConversationController : ControllerBase
                 politenessLevel = "medium";
             }
 
+            // Validate and set conversation length
+            var conversationLength = request.ConversationLength ?? 3;
+            if (conversationLength < 1 || conversationLength > 10)
+            {
+                conversationLength = 3;
+            }
+
             // Create conversation
             var conversation = new Conversation
             {
@@ -60,7 +67,8 @@ public class ConversationController : ControllerBase
                 Agent1Personality = request.Agent1Personality,
                 Agent2Personality = request.Agent2Personality,
                 Topic = request.Topic,
-                IterationCount = 3,
+                IterationCount = conversationLength, // Keep for backward compatibility
+                ConversationLength = conversationLength,
                 Status = "InProgress",
                 PolitenessLevel = politenessLevel,
                 StartTime = DateTime.UtcNow
@@ -68,20 +76,25 @@ public class ConversationController : ControllerBase
 
             _context.Conversations.Add(conversation);
 
-            // Call OpenAI for Agent 1 with empty history
+            // Calculate expected total messages: 2 (intro) + (conversationLength * 2) + 2 (conclusion)
+            var expectedTotalMessages = 2 + (conversationLength * 2) + 2;
+
+            // Call OpenAI for Agent 1 with empty history (Introduction phase)
             var messageContent = await _openAIService.GenerateResponseAsync(
                 request.Agent1Personality,
                 request.Topic,
                 "",
-                politenessLevel);
+                politenessLevel,
+                ConversationPhase.Introduction);
 
-            // Save first message
+            // Save first message (Introduction phase)
             var message = new Message
             {
                 Id = Guid.NewGuid(),
                 ConversationId = conversation.Id,
                 AgentType = "A1",
                 IterationNumber = 1,
+                Phase = ConversationPhase.Introduction,
                 Content = messageContent,
                 Timestamp = DateTime.UtcNow
             };
@@ -89,7 +102,7 @@ public class ConversationController : ControllerBase
             _context.Messages.Add(message);
             await _context.SaveChangesAsync();
 
-            _logger.LogInformation("Conversation {ConversationId} initialized with first message from A1", conversation.Id);
+            _logger.LogInformation("Conversation {ConversationId} initialized with first message from A1 (Introduction phase)", conversation.Id);
 
             // Return response with isOngoing=true
             return Ok(new ConversationResponse
@@ -98,8 +111,10 @@ public class ConversationController : ControllerBase
                 Message = messageContent,
                 AgentType = "A1",
                 IterationNumber = 1,
+                Phase = "Introduction",
                 IsOngoing = true,
-                TotalMessages = 1
+                TotalMessages = 1,
+                ExpectedTotalMessages = expectedTotalMessages
             });
         }
         catch (Exception ex)
@@ -129,10 +144,36 @@ public class ConversationController : ControllerBase
             if (conversation.Status == "Completed")
                 return BadRequest(new { error = "Conversation already completed" });
 
+            // Calculate expected total messages: 2 (intro) + (conversationLength * 2) + 2 (conclusion)
+            var expectedTotalMessages = 2 + (conversation.ConversationLength * 2) + 2;
+            
             // Calculate next agent and iteration
             var messageCount = conversation.Messages.Count;
             var nextAgent = messageCount % 2 == 1 ? "A2" : "A1";
             var iterationNumber = (messageCount / 2) + 1;
+
+            // Determine current phase based on message count
+            ConversationPhase currentPhase;
+            string phaseName;
+            
+            if (messageCount < 2)
+            {
+                // Still in introduction phase (messages 1-2)
+                currentPhase = ConversationPhase.Introduction;
+                phaseName = "Introduction";
+            }
+            else if (messageCount >= expectedTotalMessages - 2)
+            {
+                // Conclusion phase (last 2 messages)
+                currentPhase = ConversationPhase.Conclusion;
+                phaseName = "Conclusion";
+            }
+            else
+            {
+                // Conversation phase (middle messages)
+                currentPhase = ConversationPhase.Conversation;
+                phaseName = "Conversation";
+            }
 
             // Build concatenated history
             var history = string.Join("\n",
@@ -145,12 +186,13 @@ public class ConversationController : ControllerBase
                 ? conversation.Agent1Personality
                 : conversation.Agent2Personality;
 
-            // Call OpenAI for next agent with politeness level
+            // Call OpenAI for next agent with politeness level and phase
             var messageContent = await _openAIService.GenerateResponseAsync(
                 personality,
                 conversation.Topic,
                 history,
-                conversation.PolitenessLevel);
+                conversation.PolitenessLevel,
+                currentPhase);
 
             // Save new message
             var message = new Message
@@ -159,6 +201,7 @@ public class ConversationController : ControllerBase
                 ConversationId = conversation.Id,
                 AgentType = nextAgent,
                 IterationNumber = iterationNumber,
+                Phase = currentPhase,
                 Content = messageContent,
                 Timestamp = DateTime.UtcNow
             };
@@ -167,9 +210,9 @@ public class ConversationController : ControllerBase
 
             // Check completion
             var totalMessages = messageCount + 1;
-            var isOngoing = totalMessages < 6;
+            var isOngoing = totalMessages < expectedTotalMessages;
 
-            if (totalMessages == 6)
+            if (totalMessages == expectedTotalMessages)
             {
                 conversation.Status = "Completed";
                 conversation.EndTime = DateTime.UtcNow;
@@ -178,8 +221,8 @@ public class ConversationController : ControllerBase
 
             await _context.SaveChangesAsync();
 
-            _logger.LogInformation("Added message {MessageCount} ({AgentType}) to conversation {ConversationId}",
-                totalMessages, nextAgent, conversation.Id);
+            _logger.LogInformation("Added message {MessageCount} ({AgentType}, {Phase}) to conversation {ConversationId}",
+                totalMessages, nextAgent, phaseName, conversation.Id);
 
             return Ok(new ConversationResponse
             {
@@ -187,8 +230,10 @@ public class ConversationController : ControllerBase
                 Message = messageContent,
                 AgentType = nextAgent,
                 IterationNumber = iterationNumber,
+                Phase = phaseName,
                 IsOngoing = isOngoing,
-                TotalMessages = totalMessages
+                TotalMessages = totalMessages,
+                ExpectedTotalMessages = expectedTotalMessages
             });
         }
         catch (Exception ex)
