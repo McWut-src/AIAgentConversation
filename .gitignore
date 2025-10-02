@@ -427,3 +427,4 @@ FodyWeavers.xsd
 
 # Development settings with sensitive data
 appsettings.Development.json
+/AIAgentConversation/appsettings.Development.json
