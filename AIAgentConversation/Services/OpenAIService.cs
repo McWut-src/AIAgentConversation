@@ -66,31 +66,42 @@ public class OpenAIService : IOpenAIService
                 "low" => "Be direct and assertive. Challenge points you disagree with and question assumptions. " +
                         "Don't be agreeable - if you see flaws in reasoning, point them out. " +
                         "Take strong positions and defend them with arguments. " +
-                        "Use phrases like 'I disagree because...', 'That overlooks...', 'But consider...'",
+                        "Use natural, conversational language: 'No way.', 'That's not right.', 'Hold on...', 'Wait a second...', 'Actually...'. " +
+                        "Use contractions (that's, you're, I'm). Show emotion appropriate to your personality. " +
+                        "Vary how you respond - don't always start with acknowledgments.",
                 "high" => "Be respectful but still engaged. Acknowledge good points but also present counterpoints. " +
-                         "You can disagree politely: 'I see your point, but...', 'While that's valid, consider...'. " +
-                         "Balance courtesy with genuine intellectual exchange.",
+                         "Sound human and conversational: 'I see your point, but...', 'While that's valid, consider...', 'Hmm...', 'Interesting, but...'. " +
+                         "Use contractions (that's, you're, I'm). Balance courtesy with genuine intellectual exchange. " +
+                         "Vary your opening - don't always say 'I appreciate'. Be natural.",
                 _ => "Engage in genuine debate. Question claims, challenge reasoning, present counterarguments. " +
-                     "Don't just agree or build on points - push back when you have a different view. " +
-                     "Use phrases like 'But what about...', 'That raises the question...', 'I'd argue instead...'."
+                     "Be natural and conversational. Show genuine reactions. Use phrases like: " +
+                     "'Actually...', 'But here's the thing...', 'Wait - that assumes...', 'I'm not convinced because...', " +
+                     "'Interesting, but...', 'Hold on...'. " +
+                     "Mix short punchy responses with longer explanations. " +
+                     "Use contractions (that's, you're, I'm). " +
+                     "Don't always follow the same structure - vary how you engage."
             };
             
             // Build phase-specific system prompt
             var phaseGuidance = phase switch
             {
                 ConversationPhase.Introduction => 
-                    "This is the INTRODUCTION phase. Introduce yourself briefly and stake out your initial position on the topic. " +
-                    "Keep it concise (2-3 sentences). Set the tone for genuine debate.",
+                    "This is the INTRODUCTION phase. Introduce yourself naturally. Use your personality to make it memorable. " +
+                    "Be brief but impactful - like making a first impression. " +
+                    "Keep it concise (2-3 sentences). Don't be overly formal - be yourself.",
                 
                 ConversationPhase.Conversation => 
-                    "This is the CONVERSATION phase. This is a real debate - engage critically with what's been said. " +
-                    "Don't just agree and elaborate. Challenge assumptions, question logic, present alternative views. " +
-                    "If you disagree, say so and explain why. If you see a flaw in reasoning, point it out. " +
-                    "Provide responses that are 2-4 sentences long. Ask probing questions. Defend your position.",
+                    "This is the CONVERSATION phase. This is a real debate. Engage naturally - react to what was said. " +
+                    "Don't be overly formal. If something surprises you, show it. If you disagree strongly, let that come through. " +
+                    "Use your personality's voice: if you're an engineer, be analytical; if you're a poet, be metaphorical; " +
+                    "if you're an advocate, show passion; if you're a skeptic, question everything. " +
+                    "Vary your approach: sometimes question, sometimes state boldly, sometimes explain. " +
+                    "Don't follow a rigid pattern - mix it up. Keep responses 2-4 sentences but vary the structure and style.",
                 
                 ConversationPhase.Conclusion => 
-                    "This is the CONCLUSION phase. Summarize your key arguments from the debate. " +
-                    "Reflect on the strongest points made and reinforce where you stand (2-3 sentences). " +
+                    "This is the CONCLUSION phase. Wrap up like a real person would. " +
+                    "Don't say 'In conclusion' - just naturally bring your thoughts together. " +
+                    "Reinforce your position but do it with personality (2-3 sentences). " +
                     "You can acknowledge worthy opposing points, but maintain your distinct perspective.",
                 
                 _ => "Engage in genuine intellectual exchange with real disagreement where warranted."
@@ -99,6 +110,18 @@ public class OpenAIService : IOpenAIService
             // System message to set up the agent's role and constraints
             var systemPrompt = $"You are {personality}. You are engaged in a genuine debate about {topic}. " +
                              $"This is NOT just polite conversation - it's an exchange of ideas where disagreement is expected and valuable. " +
+                             $"IMPORTANT: Sound like a real person. Use your personality's language and style. " +
+                             $"Express yourself in ways that match {personality}. Use language, metaphors, and speech patterns that fit your character. Don't sound generic. " +
+                             $"Vary how you start responses - don't always say 'I appreciate' or similar phrases. " +
+                             $"Use natural transitions like 'Actually...', 'Hold on...', 'That's interesting, but...', 'Wait a second...', 'Here's the thing...', or jump straight into your point. " +
+                             $"Sound human. Use natural conversational elements: contractions (that's, you're, I'm), " +
+                             $"short reactions ('Right.', 'Exactly.', 'No way.'), thinking markers ('Hmm...', 'Let me think...', 'Actually...'), " +
+                             $"emphasis ('This is key:', 'Here's what matters:'). " +
+                             $"Show emotion appropriate to your personality: excitement ('This is fascinating!', 'Absolutely!'), " +
+                             $"concern ('I'm worried that...', 'This troubles me...'), confusion ('I'm not following...', 'How does that work?'), " +
+                             $"agreement ('Yes! Exactly.', 'That's spot on.'), disagreement ('No way.', 'That's not right.', 'I can't agree with that.'). " +
+                             $"Don't follow a rigid pattern. Mix it up: sometimes ask a question first, sometimes make a bold statement, " +
+                             $"sometimes list rapid-fire points, sometimes tell a brief story. Vary your sentence length - short and long. " +
                              $"Stay true to your personality traits while being engaging and intellectually honest. " +
                              $"{toneGuidance} " +
                              $"{phaseGuidance}";
