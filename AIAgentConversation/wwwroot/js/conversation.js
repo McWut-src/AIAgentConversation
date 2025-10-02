@@ -101,7 +101,9 @@ async function startConversation() {
         
         const container = document.getElementById('conversation-container');
         container.innerHTML = '';
-        
+        // Ensure container is always visible
+        container.style.display = 'block';
+
         // Show initial waiting indicator (left for A1)
         const waitingIndicator = createWaitingIndicator('left');
         container.appendChild(waitingIndicator);
@@ -194,7 +196,7 @@ async function continueConversation() {
             // Recursively call continueConversation
             await continueConversation();
         } else {
-            // Conversation completed, enable export button
+            // Conversation completed - keep bubbles visible and enable export button
             enableExportButton();
         }
     } catch (error) {
@@ -210,6 +212,10 @@ function enableExportButton() {
     // Re-enable start button for new conversation
     const startButton = document.getElementById('start-button');
     startButton.disabled = false;
+    
+    // Keep conversation container visible with all bubbles
+    const container = document.getElementById('conversation-container');
+    container.style.display = 'block';
 }
 
 // Export conversation in selected format
