@@ -424,3 +424,6 @@ FodyWeavers.xsd
 *.msix
 *.msm
 *.msp
+
+# Development settings with sensitive data
+appsettings.Development.json
