@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AIAgentConversation.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20251002172018_InitialCreate")]
+    [Migration("20251002183415_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -35,6 +35,9 @@ namespace AIAgentConversation.Migrations
                         .IsRequired()
                         .HasMaxLength(500)
                         .HasColumnType("TEXT");
+
+                    b.Property<int>("ConversationLength")
+                        .HasColumnType("INTEGER");
 
                     b.Property<DateTime?>("EndTime")
                         .HasColumnType("TEXT");
@@ -84,6 +87,9 @@ namespace AIAgentConversation.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<int>("IterationNumber")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("Phase")
                         .HasColumnType("INTEGER");
 
                     b.Property<DateTime>("Timestamp")

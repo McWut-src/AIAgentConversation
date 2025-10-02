@@ -20,6 +20,7 @@ namespace AIAgentConversation.Migrations
                     Agent2Personality = table.Column<string>(type: "TEXT", maxLength: 500, nullable: false),
                     Topic = table.Column<string>(type: "TEXT", maxLength: 1000, nullable: false),
                     IterationCount = table.Column<int>(type: "INTEGER", nullable: false),
+                    ConversationLength = table.Column<int>(type: "INTEGER", nullable: false),
                     Status = table.Column<string>(type: "TEXT", maxLength: 50, nullable: false),
                     PolitenessLevel = table.Column<string>(type: "TEXT", maxLength: 20, nullable: false),
                     StartTime = table.Column<DateTime>(type: "TEXT", nullable: false),
@@ -38,6 +39,7 @@ namespace AIAgentConversation.Migrations
                     ConversationId = table.Column<Guid>(type: "TEXT", nullable: false),
                     AgentType = table.Column<string>(type: "TEXT", maxLength: 10, nullable: false),
                     IterationNumber = table.Column<int>(type: "INTEGER", nullable: false),
+                    Phase = table.Column<int>(type: "INTEGER", nullable: false),
                     Content = table.Column<string>(type: "TEXT", nullable: false),
                     Timestamp = table.Column<DateTime>(type: "TEXT", nullable: false)
                 },
