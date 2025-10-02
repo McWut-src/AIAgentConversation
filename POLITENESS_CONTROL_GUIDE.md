@@ -2,7 +2,7 @@
 
 ## Overview
 
-The Agent Politeness Control feature allows you to adjust how direct or courteous the AI agents are with each other during conversations. This helps avoid overly agreeable responses like "I appreciate and value your..." when you want more assertive discussions.
+The Agent Politeness Control feature allows you to adjust how direct or courteous the AI agents are with each other during conversations. This controls the level of debate intensity - from respectful but still challenging discourse, to direct assertive disagreement. The system now encourages genuine intellectual exchange with real disagreement where warranted, rather than overly agreeable "chatbot" responses.
 
 ## Using the Politeness Control
 
@@ -14,30 +14,34 @@ The politeness slider is located in the conversation setup form, between the "Co
 The slider has three positions:
 
 #### 1. Low (Direct) - Left Position 🔴
-**When to use:** For debates, critical analysis, or when you want agents to challenge each other
-- Agents will be direct and assertive
-- They will challenge points they disagree with
-- Less "polite padding" in responses
-- Focus on substance over courtesy
+**When to use:** For vigorous debates, critical analysis, or when you want agents to strongly challenge each other
+- Agents will be very direct and assertive
+- They will actively challenge points and question assumptions
+- No polite padding - straight to the point
+- Focus on taking strong positions and defending them
+- Will point out flaws in reasoning directly
 
-**Example tone:** "That's a flawed assumption because..." or "I disagree with that premise..."
+**Example tone:** "I disagree because...", "That overlooks...", "But consider...", "That's a flawed assumption..."
 
 #### 2. Medium (Balanced) - Center Position 🟡 (Default)
-**When to use:** For general discussions and most topics
-- Balanced tone - neither overly polite nor confrontational
-- Thoughtful engagement without excessive pleasantries
-- Natural conversational flow
+**When to use:** For genuine debates and intellectual exchange on most topics
+- Engages in real debate with disagreement when warranted
+- Questions claims and challenges reasoning
+- Presents counterarguments rather than just agreeing
+- Pushes back when holding different views
+- Natural debate flow like a thoughtful Twitter thread
 
-**Example tone:** "That's an interesting point, though I see it differently..." or "Building on that idea..."
+**Example tone:** "But what about...", "That raises the question...", "I'd argue instead...", "While true, this ignores..."
 
 #### 3. High (Courteous) - Right Position 🟢
-**When to use:** For collaborative brainstorming or when you want respectful dialogue
-- Very respectful and courteous language
-- Agents acknowledge each other's points graciously
-- Uses phrases like "I appreciate your perspective" and "That's a valid point"
-- Warm, collaborative tone
+**When to use:** For respectful debates or discussions where courtesy matters
+- Respectful but still intellectually engaged
+- Acknowledges good points while presenting counterpoints
+- Disagrees politely but meaningfully
+- Balances courtesy with genuine intellectual exchange
+- Still debates, just more diplomatically
 
-**Example tone:** "I really appreciate that insight. Building on your excellent point..." or "You raise a valuable consideration..."
+**Example tone:** "I see your point, but...", "While that's valid, consider...", "That's thoughtful, though I'd note...", "Respectfully, I disagree because..."
 
 ## How to Set Politeness Level
 
@@ -51,10 +55,11 @@ The slider has three positions:
 
 ## Tips
 
-- **For philosophical debates:** Try Low (Direct) - it produces more engaging arguments
-- **For technical discussions:** Medium works best for balanced analysis
-- **For creative brainstorming:** High (Courteous) encourages building on ideas
-- **Experiment:** Try the same topic with different politeness levels to see how it affects the conversation
+- **For philosophical debates:** Try Low (Direct) - it produces vigorous, challenging arguments
+- **For technical discussions:** Medium works best for genuine intellectual exchange with disagreement
+- **For nuanced debates:** High (Courteous) provides thoughtful disagreement with diplomatic language
+- **Default recommendation:** Medium now provides genuine debate rather than overly agreeable conversation
+- **Experiment:** Try the same topic with different politeness levels to see how debate intensity changes
 
 ## Technical Details
 
@@ -67,18 +72,18 @@ The slider has three positions:
 
 ### Low Politeness Example
 **Topic:** "Climate change solutions"
-**Agent 1:** "That approach overlooks the economic reality. We need practical solutions, not idealistic ones."
-**Agent 2:** "That's short-sighted thinking. Economics shouldn't trump environmental necessity."
+**Agent 1:** "That approach overlooks the economic reality. We need practical solutions, not idealistic ones that ignore market forces."
+**Agent 2:** "That's short-sighted thinking. Economics shouldn't trump environmental necessity when we're talking about planetary survival."
 
 ### Medium Politeness Example  
 **Topic:** "Climate change solutions"
-**Agent 1:** "While economic factors matter, we should also consider long-term environmental impact."
-**Agent 2:** "I see your point, though I think the economic angle needs more weight in the discussion."
+**Agent 1:** "But what about the economic disruption? You're proposing massive changes without addressing how industries will adapt."
+**Agent 2:** "That raises the question of what cost we put on environmental collapse. I'd argue the economic cost of inaction far exceeds transition costs."
 
 ### High Politeness Example
 **Topic:** "Climate change solutions"
-**Agent 1:** "I appreciate your economic perspective. Building on that, perhaps we could explore solutions that balance both concerns."
-**Agent 2:** "That's an excellent suggestion. Your point about balance really resonates with me."
+**Agent 1:** "I see your point about urgency, but we need to consider the practical economic constraints that governments face."
+**Agent 2:** "While that's valid, I'd note that many economists now argue green transitions can drive growth. Respectfully, I disagree that economics should limit action."
 
 ## Troubleshooting
 
