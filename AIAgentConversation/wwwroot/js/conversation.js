@@ -85,6 +85,9 @@ document.addEventListener('DOMContentLoaded', function() {
         exportConversation('xml');
         exportDropdown.style.display = 'none';
     });
+    
+    // Initialize TTS functionality
+    initializeTTS();
 });
 
 // Helper function to create message bubble
@@ -105,10 +108,25 @@ function createMessageBubbleWithPhase(message, agentType, phase) {
     phaseBadge.className = `phase-badge phase-${phase.toLowerCase()}`;
     phaseBadge.textContent = phase;
     
+    // Message bubble wrapper (for bubble + TTS button)
+    const bubbleWrapper = document.createElement('div');
+    bubbleWrapper.className = 'message-bubble-wrapper';
+    
     // Message bubble
     const bubble = document.createElement('div');
     bubble.className = agentType === 'A1' ? 'message-bubble-a1' : 'message-bubble-a2';
     bubble.textContent = message;
+    
+    // TTS button
+    const ttsBtn = document.createElement('button');
+    ttsBtn.className = 'tts-btn';
+    ttsBtn.setAttribute('data-content', message);
+    ttsBtn.setAttribute('aria-label', 'Play message as speech');
+    ttsBtn.setAttribute('tabindex', '0');
+    ttsBtn.textContent = '🔊';
+    
+    bubbleWrapper.appendChild(bubble);
+    bubbleWrapper.appendChild(ttsBtn);
     
     // Align based on agent
     if (agentType === 'A1') {
@@ -118,7 +136,7 @@ function createMessageBubbleWithPhase(message, agentType, phase) {
     }
     
     container.appendChild(phaseBadge);
-    container.appendChild(bubble);
+    container.appendChild(bubbleWrapper);
     return container;
 }
 
@@ -128,6 +146,71 @@ function createWaitingIndicator(side) {
     div.className = `waiting-indicator waiting-${side}`;
     div.textContent = '...';
     return div;
+}
+
+// Initialize Text-to-Speech functionality
+function initializeTTS() {
+    // Check if browser supports TTS
+    if (!('speechSynthesis' in window)) {
+        console.warn('Text-to-Speech not supported in this browser');
+        return;
+    }
+    
+    // Set up event delegation for TTS buttons (handles dynamically added buttons)
+    document.addEventListener('click', function(e) {
+        if (e.target && e.target.classList.contains('tts-btn')) {
+            handleTTS(e);
+        }
+    });
+    
+    // Set up keyboard navigation for TTS buttons
+    document.addEventListener('keydown', function(e) {
+        if (e.target && e.target.classList.contains('tts-btn')) {
+            if (e.key === 'Enter' || e.key === ' ') {
+                handleTTS(e);
+                e.preventDefault();
+            }
+        }
+    });
+}
+
+// Handle TTS button activation
+function handleTTS(e) {
+    const btn = e.target;
+    const text = btn.getAttribute('data-content');
+    
+    if (!text) return;
+    
+    // Cancel any ongoing speech
+    window.speechSynthesis.cancel();
+    
+    // Create and configure utterance
+    const utterance = new window.SpeechSynthesisUtterance(text);
+    
+    // Optional: Configure voice settings (can be customized)
+    utterance.rate = 1.0;  // Speed (0.1 to 10)
+    utterance.pitch = 1.0; // Pitch (0 to 2)
+    utterance.volume = 1.0; // Volume (0 to 1)
+    
+    // Visual feedback during speech
+    utterance.onstart = () => {
+        btn.classList.add('speaking');
+        btn.disabled = true;
+    };
+    
+    utterance.onend = () => {
+        btn.classList.remove('speaking');
+        btn.disabled = false;
+    };
+    
+    utterance.onerror = (event) => {
+        console.error('TTS error:', event);
+        btn.classList.remove('speaking');
+        btn.disabled = false;
+    };
+    
+    // Speak the message
+    window.speechSynthesis.speak(utterance);
 }
 
 // Validate input field
