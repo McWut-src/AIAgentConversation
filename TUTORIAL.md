@@ -229,17 +229,7 @@ git commit -m "Initial project setup with .NET 8 and required packages"
 
 **Copy the entire content from the artifact I created earlier** into this file.
 
-### 3.2 Create Project Board File
-
-**In Solution Explorer:**
-
-1. Right-click Solution
-2. Add → New Item → Text File
-3. Name it `project_board.yaml`
-
-**Copy the entire content from the project_board.yaml artifact** into this file.
-
-### 3.3 Test GitHub Copilot
+### 3.2 Test GitHub Copilot
 
 **Open GitHub Copilot Chat:**
 - View → GitHub Copilot Chat
@@ -274,8 +264,8 @@ Right-click Models folder → Add → Class → `Conversation.cs`
 **In GitHub Copilot Chat:**
 
 ```
-@workspace Following project_board.yaml task E1-F2-T4-ST10, 
-create the Conversation entity model
+@workspace Create the Conversation entity model with Agent1Personality, 
+Agent2Personality, Topic, Status, and Messages properties
 ```
 
 Copilot will generate something like:
@@ -325,8 +315,8 @@ namespace AIAgentConversation.Models
 **Create `Models/Message.cs`:**
 
 ```
-@workspace Following project_board.yaml task E1-F2-T5-ST12, 
-create the Message entity model
+@workspace Create the Message entity model with ConversationId, 
+AgentType, IterationNumber, Content, and Timestamp properties
 ```
 
 ```csharp
@@ -365,8 +355,8 @@ namespace AIAgentConversation.Models
 **Create `Data/ApplicationDbContext.cs`:**
 
 ```
-@workspace Following project_board.yaml task E1-F2-T6-ST14, 
-create ApplicationDbContext class
+@workspace Create ApplicationDbContext class with DbSets for 
+Conversations and Messages
 ```
 
 ```csharp
@@ -540,8 +530,7 @@ Replace `your-openai-api-key-here` with your actual OpenAI API key.
 **Create `Services/IOpenAIService.cs`:**
 
 ```
-@workspace Following project_board.yaml task E2-F3-T8-ST20, 
-create IOpenAIService interface
+@workspace Create IOpenAIService interface with GenerateResponseAsync method
 ```
 
 ```csharp
@@ -561,8 +550,8 @@ namespace AIAgentConversation.Services
 **Create `Services/OpenAIService.cs`:**
 
 ```
-@workspace Following project_board.yaml task E2-F3-T9, 
-implement OpenAIService with exact prompt format from copilot-instructions.md
+@workspace Implement OpenAIService that calls GPT-3.5-turbo with 
+personality, topic, and conversation history
 ```
 
 ```csharp
@@ -757,8 +746,8 @@ namespace AIAgentConversation.Models.DTOs
 **Create `Controllers/ConversationController.cs`:**
 
 ```
-@workspace Following project_board.yaml task E2-F4-T12, 
-create ConversationController with dependency injection
+@workspace Create ConversationController with dependency injection for 
+DbContext, OpenAIService, and Logger
 ```
 
 ```csharp
@@ -801,8 +790,8 @@ namespace AIAgentConversation.Controllers
 ### 6.3 Implement Init Endpoint
 
 ```
-@workspace Following project_board.yaml task E2-F4-T14, 
-implement the Init endpoint with all subtasks
+@workspace Implement the Init endpoint that creates a conversation, 
+calls Agent 1, and returns the first message
 ```
 
 **Add this method to ConversationController:**
@@ -888,8 +877,8 @@ public async Task<IActionResult> Init([FromBody] InitConversationRequest request
 ### 6.4 Implement Follow Endpoint
 
 ```
-@workspace Following project_board.yaml task E2-F4-T15, 
-implement the Follow endpoint with agent alternation logic
+@workspace Implement the Follow endpoint that continues the conversation 
+with proper agent alternation
 ```
 
 **Add this method to ConversationController:**
@@ -981,8 +970,8 @@ public async Task<IActionResult> Follow([FromBody] FollowConversationRequest req
 ### 6.5 Implement Get Endpoint
 
 ```
-@workspace Following project_board.yaml task E2-F4-T16, 
-implement the Get endpoint with markdown formatting
+@workspace Implement the Get endpoint that returns a completed 
+conversation in markdown format
 ```
 
 **Add this method to ConversationController:**
@@ -1066,8 +1055,8 @@ This creates `Index.cshtml` and `Index.cshtml.cs`
 ### 7.2 Edit Index.cshtml
 
 ```
-@workspace Following project_board.yaml task E3-F5-T17, 
-create the Index.cshtml with text inputs and conversation display
+@workspace Create the Index.cshtml page with text inputs for personalities 
+and topic, plus conversation display area
 ```
 
 **Replace content of `Pages/Index.cshtml`:**
@@ -1257,8 +1246,8 @@ create the Index.cshtml with text inputs and conversation display
 **Create `wwwroot/js/conversation.js`:**
 
 ```
-@workspace Following project_board.yaml task E3-F6-T19 through T24, 
-create the complete conversation.js with all functions
+@workspace Create conversation.js with functions for starting conversations, 
+handling API calls, and displaying messages
 ```
 
 ```javascript
@@ -1695,21 +1684,23 @@ Should produce: `"A1: msg1\nA2: msg2\nA1: msg3"`
 
 ## 10. Next Steps
 
-### 10.1 Mark Tasks Complete in project_board.yaml
+### 10.1 Verify Your Implementation
 
-Update `project_board.yaml` for completed tasks:
+**Test your application thoroughly:**
+- Start a conversation with different personalities and topics
+- Verify all 6 messages appear correctly
+- Check the markdown output at the end
+- Review console logs for any errors
+- Test with various conversation topics
 
-```yaml
-- id: ST1
-  title: "Create Git repository and solution file"
-  status: done
-  completion_note: "Initialized Git repo and created .NET 8 solution with Razor Pages"
-  error_log: ""
-  depends_on: []
-  effort: 1
-```
+**Code Quality Checklist:**
+- All API endpoints return proper status codes
+- Error handling is implemented throughout
+- Input validation works correctly
+- Database operations complete successfully
+- UI updates reflect the conversation flow
 
-### 10.2 Enhancements (Out of Scope for v1.0)
+### 10.2 Enhancements and Next Steps
 
 **Ideas for v2.0:**
 - Add conversation history page
@@ -1788,7 +1779,7 @@ git push -u origin main
 - 1 Service interface + implementation
 - 1 API Controller with 3 endpoints
 - 1 Razor page with CSS and JavaScript
-- Configuration files (appsettings, project_board.yaml, copilot-instructions.md)
+- Configuration files (appsettings.json, appsettings.Development.json)
 
 **Lines of Code:** ~800-1000 lines
 
@@ -1819,10 +1810,11 @@ You've successfully built a complete AI Agent Conversation Platform using:
 ## 📞 Support
 
 **If you get stuck:**
-1. Review the project_board.yaml for task details
-2. Check copilot-instructions.md for requirements
+1. Review the [API.md](API.md) for API details
+2. Check [UI.md](UI.md) for UI implementation guidance
 3. Use GitHub Copilot Chat: `@workspace help with [your problem]`
 4. Review the Troubleshooting section above
-5. Check the README.md for additional documentation
+5. Check the [README.md](README.md) for additional documentation
+6. Consult [AI_CUSTOMIZATION_GUIDE.md](AI_CUSTOMIZATION_GUIDE.md) for AI behavior
 
 **Happy Coding!** 🎯

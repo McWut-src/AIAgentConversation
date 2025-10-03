@@ -122,7 +122,8 @@ If you get a build error:
 - **[API.md](API.md)** - API endpoint documentation
 - **[UI.md](UI.md)** - UI usage guide
 - **[TUTORIAL.md](TUTORIAL.md)** - Complete tutorial
-- **[project_board.yaml](project_board.yaml)** - Detailed task breakdown
+- **[AI_CUSTOMIZATION_GUIDE.md](AI_CUSTOMIZATION_GUIDE.md)** - AI customization guide
+- **[CONVERSATION_PHASES.md](CONVERSATION_PHASES.md)** - Phase structure documentation
 
 ## Support
 

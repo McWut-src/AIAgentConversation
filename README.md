@@ -32,21 +32,67 @@ A single-page web application that enables dynamic conversations between two AI 
 
 ## 📋 Table of Contents
 
+- [Features](#features)
 - [Architecture](#architecture)
 - [Prerequisites](#prerequisites)
-- [Installation](#installation)
+- [Quick Start](#quick-start)
 - [Configuration](#configuration)
-- [Usage](#usage)
-- [AI Conversation Improvements](#ai-conversation-improvements)
-- [Project Structure](#project-structure)
-- [API Documentation](#api-documentation)
-- [Database Schema](#database-schema)
-- [Workflow](#workflow)
+- [Documentation](#documentation)
 - [Development](#development)
-- [Visual Studio & GitHub Copilot Setup](#visual-studio--github-copilot-setup)
 - [Troubleshooting](#troubleshooting)
 - [Contributing](#contributing)
 - [License](#license)
+
+## 🚀 Quick Start
+
+### Prerequisites
+
+- **.NET 8 SDK** - [Download here](https://dotnet.microsoft.com/download/dotnet/8.0)
+- **OpenAI API Key** - [Get your key](https://platform.openai.com/api-keys)
+- **SQL Server LocalDB** - Included with Visual Studio or install separately
+
+### Installation (5 minutes)
+
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/McWut-src/AIAgentConversation.git
+   cd AIAgentConversation
+   ```
+
+2. **Set up your OpenAI API key**
+   ```bash
+   dotnet user-secrets init --project AIAgentConversation
+   dotnet user-secrets set "OpenAI:ApiKey" "your-api-key-here" --project AIAgentConversation
+   ```
+
+3. **Apply database migrations**
+   ```bash
+   dotnet ef database update --project AIAgentConversation
+   ```
+
+4. **Run the application**
+   ```bash
+   dotnet run --project AIAgentConversation
+   ```
+
+5. **Open in browser**
+   - Navigate to `https://localhost:5001`
+   - Enter two distinct personalities
+   - Choose a topic
+   - Click "Start Conversation"
+   - Watch the AI agents converse!
+
+### First Conversation Example
+
+**Try these inputs:**
+- **Agent 1 Personality**: "A pragmatic software engineer who values proven solutions and best practices"
+- **Agent 2 Personality**: "A forward-thinking innovator who embraces cutting-edge technologies"
+- **Topic**: "The role of AI in modern software development"
+- **Exchange Count**: 3 (default)
+- **Politeness**: Balanced (level 3)
+
+For detailed setup instructions, see **[SETUP.md](SETUP.md)**.  
+For a complete tutorial, see **[TUTORIAL.md](TUTORIAL.md)**.
 
 ## 🏗️ Architecture
 
@@ -133,33 +179,24 @@ sqlcmd -S "(localdb)\mssqllocaldb" -d AIConversations -Q "SELECT * FROM Conversa
 sqlcmd -S "(localdb)\mssqllocaldb" -d AIConversations -Q "DELETE FROM Messages; DELETE FROM Conversations"
 ```
 
-### Project Board Tracking
+### Development Workflow
 
-This project uses `project_board.yaml` for detailed task tracking:
+This project follows standard Git workflow practices:
 
-**Status Values:**
-- `todo` - Not started
-- `in_progress` - Currently working
-- `done` - Completed and verified
-- `failed` - Blocked or failed
+**Branch Strategy:**
+- `main` - Production-ready code
+- `feature/*` - New features
+- `fix/*` - Bug fixes
 
-**Updating Status:**
+**Commit Guidelines:**
+- Use clear, descriptive commit messages
+- Follow conventional commits format: `feat:`, `fix:`, `docs:`, `refactor:`, etc.
+- Test thoroughly before committing
 
-When completing a task:
-```yaml
-status: done
-completion_note: "Implemented init endpoint with A1 call and DB save"
-error_log: ""
-```
-
-When encountering an error:
-```yaml
-status: in_progress
-completion_note: ""
-error_log: "OpenAI API returns 401 - invalid API key"
-```
-
-**Never mark a task as done unless code is fully implemented and tested.**
+**Code Review:**
+- All changes should be reviewed before merging
+- Ensure all tests pass
+- Verify documentation is updated
 
 ## 🧪 Testing
 
@@ -383,18 +420,39 @@ The current implementation focuses on:
 
 ## 📝 Documentation Files
 
-### Available Documentation
+## 📚 Documentation
 
-1. **README.md** (this file) - Project overview and setup
-2. **API.md** - Detailed API endpoint documentation
-3. **UI.md** - UI usage and JavaScript implementation guide
-4. **project_board.yaml** - Detailed task breakdown and status tracking
+### Core Documentation
 
-### Quick Links
+| Document | Description |
+|----------|-------------|
+| **[README.md](README.md)** | Project overview, features, and quick start (this file) |
+| **[SETUP.md](SETUP.md)** | Quick setup instructions |
+| **[TUTORIAL.md](TUTORIAL.md)** | Complete step-by-step tutorial |
 
-- **[API Documentation](API.md)** - Complete endpoint reference
-- **[UI Documentation](UI.md)** - Frontend implementation guide
-- **[Project Board](project_board.yaml)** - Task tracking and planning
+### Technical Documentation
+
+| Document | Description |
+|----------|-------------|
+| **[API.md](API.md)** | Complete API endpoint reference |
+| **[UI.md](UI.md)** | User interface guide and JavaScript implementation |
+| **[CONVERSATION_PHASES.md](CONVERSATION_PHASES.md)** | Conversation phase structure |
+
+### AI Behavior Guides
+
+| Document | Description |
+|----------|-------------|
+| **[AI_BEHAVIOR_GUIDE.md](AI_BEHAVIOR_GUIDE.md)** | Comprehensive guide to AI behavior, prompts, and debate flow |
+| **[AI_CUSTOMIZATION_GUIDE.md](AI_CUSTOMIZATION_GUIDE.md)** | Practical customization guide for developers |
+| **[POLITENESS_CONTROL_GUIDE.md](POLITENESS_CONTROL_GUIDE.md)** | Guide to debate intensity control |
+
+### Project Information
+
+| Document | Description |
+|----------|-------------|
+| **[CONTRIBUTING.md](CONTRIBUTING.md)** | Contribution guidelines and workflow |
+| **[CHANGELOG.md](CHANGELOG.md)** | Version history and release notes |
+| **[LICENSE](LICENSE)** | MIT License |
 
 ## 🤝 Contributing
 
@@ -402,35 +460,33 @@ The current implementation focuses on:
 
 1. **Fork the repository**
 2. **Create a feature branch**: `git checkout -b feature/amazing-feature`
-3. **Follow the workflow strictly** - Review `project_board.yaml` for requirements
-4. **Update project_board.yaml** - Mark tasks as done with completion notes
-5. **Test thoroughly** - Verify all 15 workflow checkpoints
-6. **Commit with clear messages**: `git commit -m 'feat: Add conversation export'`
-7. **Push to branch**: `git push origin feature/amazing-feature`
-8. **Open a Pull Request**
+3. **Write clean, well-documented code**
+4. **Test thoroughly** - Ensure all functionality works as expected
+5. **Commit with clear messages**: `git commit -m 'feat: Add conversation export'`
+6. **Push to branch**: `git push origin feature/amazing-feature`
+7. **Open a Pull Request**
 
 ### Code Review Checklist
 
-- [ ] Follows exact workflow from project_board.yaml
-- [ ] Uses correct prompt format
+- [ ] Uses correct prompt format for AI interactions
 - [ ] Implements proper error handling with Serilog
 - [ ] Validates all inputs
 - [ ] Tests database operations
 - [ ] Updates documentation
 - [ ] No breaking changes to API contracts
 - [ ] Maintains stateless design
-- [ ] Fixed iteration count (3) maintained
+- [ ] Code follows existing patterns and conventions
 
 ### Development Workflow
 
 ```
-1. Select task from project_board.yaml (status: todo)
-2. Update status to in_progress
-3. Implement feature following guidelines
+1. Identify feature or bug fix needed
+2. Create feature branch
+3. Implement changes following coding guidelines
 4. Test thoroughly (manual + database verification)
-5. Update status to done with completion_note
-6. Commit with clear message
-7. Move to next task
+5. Commit with clear, descriptive message
+6. Open pull request for review
+7. Address review feedback and merge
 ```
 
 ## 🐛 Troubleshooting
@@ -524,55 +580,47 @@ Solution:
 
 **Implementation Status:**
 
-| Epic | Status | Notes |
-|------|--------|-------|
-| E1: Project Setup | 🔄 In Progress | Follow project_board.yaml |
-| E2: API Development | 📋 Planned | Depends on E1 completion |
-| E3: UI Development | 📋 Planned | Depends on E2 completion |
-| E4: Security | 📋 Planned | Depends on E2 completion |
-| E5: Documentation | 📋 Planned | Ongoing throughout |
-
-**Key Milestones:**
-- [x] Project plan completed
-- [x] README documentation created
-- [ ] Database schema implemented
-- [ ] OpenAI integration complete
-- [ ] API endpoints functional
-- [ ] UI displaying conversations
-- [ ] End-to-end testing passed
-- [ ] Deployment documentation ready
+**Development Status:**
+- ✅ Project setup complete
+- ✅ Database schema implemented
+- ✅ OpenAI integration complete
+- ✅ API endpoints functional
+- ✅ UI displaying conversations
+- ✅ Conversation phases implemented
+- ✅ Export functionality added
+- ✅ Enhanced AI prompts for genuine debate
+- ✅ Politeness control system
+- ✅ Progressive temperature adjustment
 
 ### Known Limitations
 
 1. **No user authentication** - All conversations are public
 2. **No rate limiting** - Vulnerable to API abuse
-3. **No conversation history** - Cannot view past conversations
-4. **Fixed iterations** - Always 3 exchanges (6 messages)
-5. **Console logging only** - No persistent logs
-6. **Stateless design** - New conversation on each page refresh
-7. **No message sanitization** - Basic validation only
-8. **LocalDB only** - Not production-ready database
+3. **Console logging only** - No persistent logs
+4. **Stateless design** - New conversation on each page refresh
+5. **Basic message sanitization** - Enhanced validation can be added
+6. **LocalDB only** - Not production-ready database
 
-These are **intentional simplifications** for v1.0.
+These are **intentional design choices** to keep the implementation simple and focused on core functionality.
 
 ## 📞 Support
 
 ### Getting Help
 
 **For implementation questions:**
-- Review `project_board.yaml` for detailed task breakdown
-- Check API.md and UI.md for specific documentation
-- Use GitHub Copilot for code suggestions
+- Check [API.md](API.md) and [UI.md](UI.md) for detailed documentation
+- Review [TUTORIAL.md](TUTORIAL.md) for step-by-step guidance
+- See [AI_CUSTOMIZATION_GUIDE.md](AI_CUSTOMIZATION_GUIDE.md) for AI behavior customization
 
 **For bugs or issues:**
 - Check Troubleshooting section above
 - Review Serilog console output for errors
 - Verify database state with SQL queries
+- Open an issue on GitHub
 
 **For feature requests:**
 - See Future Enhancements section
-- Note that v1.0 is intentionally simplified
-- Consider contributing enhancements
+- Consider contributing enhancements via pull requests
 
 ### Contact
 
@@ -1082,10 +1130,13 @@ AIAgentConversation/
 ├── appsettings.json                    # Configuration
 ├── appsettings.Development.json        # Development config
 ├── Program.cs                          # Application entry point + Serilog
-├── project_board.yaml                  # Detailed project plan
 ├── README.md                           # This file
 ├── API.md                              # API documentation
-└── UI.md                               # UI usage guide
+├── UI.md                               # UI usage guide
+├── SETUP.md                            # Quick setup instructions
+├── TUTORIAL.md                         # Complete tutorial
+├── AI_CUSTOMIZATION_GUIDE.md           # AI customization guide
+└── CONVERSATION_PHASES.md              # Phase structure documentation
 ```
 
 ## 🔌 API Documentation
