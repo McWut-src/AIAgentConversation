@@ -5,11 +5,7 @@
 This is a .NET 8 web application where two AI agents (powered by OpenAI GPT-3.5-turbo) engage in a conversation. The application follows established patterns and architectural guidelines.
 
 **Critical Files to Reference:**
-- `README.md` - Project overview and quick start
-- `API.md` - API endpoint specifications
-- `UI.md` - UI implementation guide
-- `AI_BEHAVIOR_GUIDE.md` - AI behavior and conversation quality
-- `CONTRIBUTING.md` - Development workflow and standards
+- `README.md` - Complete unified documentation (contains all project information, API docs, UI guide, AI behavior, development workflow, and more)
 
 ## Architecture Overview
 
@@ -470,8 +466,8 @@ Before marking any task as complete, verify:
 When working on new features or fixes:
 
 1. **Understand the requirement** completely
-2. **Review related documentation** (API.md, UI.md, etc.)
-3. **Follow coding guidelines** from CONTRIBUTING.md
+2. **Review README.md** for complete documentation (API, UI, coding guidelines, etc.)
+3. **Follow patterns and guidelines** from README.md
 4. **Generate code** following patterns in this document
 5. **Test the implementation** thoroughly
 6. **Update documentation** if needed
@@ -587,11 +583,9 @@ Before generating code, ask:
 
 If uncertain about any requirement:
 
-1. Check `README.md` for project overview
-2. Review `API.md` or `UI.md` for technical details
-3. Consult `AI_BEHAVIOR_GUIDE.md` for AI-related questions
-4. Reference `CONTRIBUTING.md` for development workflow
-5. Review existing code for established patterns
+1. Check `README.md` for complete documentation (contains all project information)
+2. Review appropriate sections in README.md for technical details (API, UI, AI behavior, development workflow, etc.)
+3. Review existing code for established patterns
 
 ## Final Notes
 
