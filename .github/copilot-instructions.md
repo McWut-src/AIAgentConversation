@@ -2,13 +2,14 @@
 
 ## Project Overview
 
-This is a .NET 8 web application where two AI agents (powered by OpenAI GPT-3.5-turbo) engage in a conversation. The application follows **strict specifications** defined in `project_board.yaml` and must adhere to exact workflow requirements.
+This is a .NET 8 web application where two AI agents (powered by OpenAI GPT-3.5-turbo) engage in a conversation. The application follows established patterns and architectural guidelines.
 
 **Critical Files to Reference:**
-- `project_board.yaml` - Complete task breakdown and specifications
-- `README.md` - Setup instructions and workflow details
+- `README.md` - Project overview and quick start
 - `API.md` - API endpoint specifications
 - `UI.md` - UI implementation guide
+- `AI_BEHAVIOR_GUIDE.md` - AI behavior and conversation quality
+- `CONTRIBUTING.md` - Development workflow and standards
 
 ## Architecture Overview
 
@@ -464,19 +465,16 @@ Before marking any task as complete, verify:
 - [ ] Using gpt-3.5-turbo model
 - [ ] Exactly 6 messages per conversation
 
-## Task Workflow
+## Development Workflow
 
-When working on tasks from `project_board.yaml`:
+When working on new features or fixes:
 
-1. **Read the task specification** completely
-2. **Check dependencies** (depends_on field)
-3. **Generate code** following guidelines above
-4. **Verify against critical requirements**
-5. **Test the implementation**
-6. **Update task status** in project_board.yaml:
-   - status: "done"
-   - completion_note: "Brief description of what was done"
-   - error_log: "" (clear any errors)
+1. **Understand the requirement** completely
+2. **Review related documentation** (API.md, UI.md, etc.)
+3. **Follow coding guidelines** from CONTRIBUTING.md
+4. **Generate code** following patterns in this document
+5. **Test the implementation** thoroughly
+6. **Update documentation** if needed
 
 ## Example Task Implementation
 
@@ -589,18 +587,18 @@ Before generating code, ask:
 
 If uncertain about any requirement:
 
-1. Check `project_board.yaml` for task details
-2. Review `README.md` for workflow documentation
-3. Look at the workflow_verification section
-4. Reference the critical_requirements list
-5. Ensure no deviations from specifications
+1. Check `README.md` for project overview
+2. Review `API.md` or `UI.md` for technical details
+3. Consult `AI_BEHAVIOR_GUIDE.md` for AI-related questions
+4. Reference `CONTRIBUTING.md` for development workflow
+5. Review existing code for established patterns
 
 ## Final Notes
 
-- **Simplicity over complexity** - This is v1.0 with intentional limitations
-- **Strict adherence** - Do not "improve" the design without approval
-- **No extras** - No authentication, rate limiting, or advanced features
-- **Fixed workflow** - The conversation flow is non-negotiable
-- **Test thoroughly** - Verify against all 15 critical requirements
+- **Follow existing patterns** - Maintain consistency with codebase
+- **Documentation is key** - Keep docs updated with code changes
+- **Test thoroughly** - Verify functionality before committing
+- **Ask for clarification** - When in doubt, ask rather than assume
+- **Quality over speed** - Write maintainable, well-tested code
 
-**When in doubt, follow project_board.yaml exactly as written.**
+**When in doubt, consult the documentation and follow established patterns.**

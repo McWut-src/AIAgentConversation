@@ -454,6 +454,12 @@ The current implementation focuses on:
 | **[CHANGELOG.md](CHANGELOG.md)** | Version history and release notes |
 | **[LICENSE](LICENSE)** | MIT License |
 
+### Documentation Index
+
+**📖 [DOCS.md](DOCS.md)** - Complete documentation index with navigation guide
+
+*Can't find what you're looking for? Check the documentation index for organized access to all guides.*
+
 ## 🤝 Contributing
 
 ### Contribution Guidelines
