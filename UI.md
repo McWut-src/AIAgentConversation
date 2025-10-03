@@ -1023,8 +1023,9 @@ input:focus, button:focus {
 - [README.md](README.md) - Project overview and setup
 - [API.md](API.md) - API endpoint documentation
 - [TUTORIAL.md](TUTORIAL.md) - Complete walkthrough
-- `project_board.yaml` - Implementation details
-- `.github/copilot-instructions.md` - Development guidelines
+- [SETUP.md](SETUP.md) - Quick setup guide
+- [AI_CUSTOMIZATION_GUIDE.md](AI_CUSTOMIZATION_GUIDE.md) - AI customization guide
+- [CONVERSATION_PHASES.md](CONVERSATION_PHASES.md) - Phase structure documentation
 
 **Source Files:**
 - `Pages/Index.cshtml` - Razor page markup
